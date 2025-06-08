@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Analytics - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px;
+        }
+        
+        /* Enhanced Analytics Header */
+        .analytics-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .analytics-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            margin-right: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .analytics-summary {
+            text-align: center;
+        }
+        
+        .main-metric {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+        
+        .time-range {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .range-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .range-btn.active {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+        }
+        
+        /* Progress Overview Cards */
+        .progress-overview {
+            padding: 20px 16px;
+        }
+        
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .overview-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .overview-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+        
+        .overview-card.streaks::before {
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+        }
+        
+        .overview-card.achievements::before {
+            background: linear-gradient(90deg, #ffd700, #f39c12);
+        }
+        
+        .overview-card.skills::before {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .overview-card.time::before {
+            background: linear-gradient(90deg, #2196f3, #21cbf3);
+        }
+        
+        .card-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .card-number {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .card-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+        
+        .card-trend {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        
+        .trend-up {
+            background: #e8f5e8;
+            color: #27ae60;
+        }
+        
+        .trend-down {
+            background: #fee8e8;
+            color: #e74c3c;
+        }
+        
+        /* Weekly Chart */
+        .chart-section {
+            margin: 24px 16px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .chart-legend {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .legend-color {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .legend-color.surfing {
+            background: #2196f3;
+        }
+        
+        .legend-color.guitar {
+            background: #e91e63;
+        }
+        
+        .legend-color.reading {
+            background: #ff9800;
+        }
+        
+        /* Simple Bar Chart */
+        .bar-chart {
+            display: flex;
+            align-items: end;
+            gap: 8px;
+            height: 120px;
+            margin-bottom: 12px;
+        }
+        
+        .bar-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .bars {
+            display: flex;
+            gap: 2px;
+            align-items: end;
+            height: 100px;
+        }
+        
+        .bar {
+            width: 12px;
+            border-radius: 2px 2px 0 0;
+            transition: all 0.3s ease;
+        }
+        
+        .bar.surfing {
+            background: linear-gradient(to top, #2196f3, #64b5f6);
+        }
+        
+        .bar.guitar {
+            background: linear-gradient(to top, #e91e63, #f06292);
+        }
+        
+        .bar.reading {
+            background: linear-gradient(to top, #ff9800, #ffb74d);
+        }
+        
+        .day-label {
+            font-size: 10px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        /* Skill Progress Bars */
+        .skills-progress {
+            margin: 24px 16px;
+        }
+        
+        .skill-progress-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .skill-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .skill-icon {
+            font-size: 20px;
+        }
+        
+        .skill-name {
+            font-weight: 600;
+        }
+        
+        .skill-level {
+            background: #f1f3f4;
+            color: #6c757d;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #f1f3f4;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-fill.surfing {
+            background: linear-gradient(90deg, #2196f3, #64b5f6);
+            width: 75%;
+        }
+        
+        .progress-fill.guitar {
+            background: linear-gradient(90deg, #e91e63, #f06292);
+            width: 60%;
+        }
+        
+        .progress-fill.skateboard {
+            background: linear-gradient(90deg, #ff9800, #ffb74d);
+            width: 40%;
+        }
+        
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        /* Achievements Gallery */
+        .achievements-section {
+            margin: 24px 16px;
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .achievement-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .achievement-card.unlocked {
+            background: linear-gradient(135deg, #ffd700, #f39c12);
+            color: white;
+        }
+        
+        .achievement-card.locked {
+            opacity: 0.6;
+            background: #f8f9fa;
+        }
+        
+        .achievement-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .achievement-name {
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        /* Insights Cards */
+        .insights-section {
+            margin: 24px 16px;
+        }
+        
+        .insight-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .insight-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .insight-icon {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .insight-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        
+        .insight-action {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .insight-action:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Analytics Header -->
+        <div class="analytics-header">
+            <div class="header-content">
+                <div class="nav-bar">
+                    <button class="back-btn">←</button>
+                    <h1 class="page-title">Visual Analytics</h1>
+                </div>
+                
+                <div class="analytics-summary">
+                    <div class="main-metric">2,850 XP</div>
+                    <div class="metric-label">This Week's Progress</div>
+                    <div class="time-range">
+                        <button class="range-btn">7D</button>
+                        <button class="range-btn active">30D</button>
+                        <button class="range-btn">90D</button>
+                        <button class="range-btn">1Y</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Progress Overview -->
+        <div class="progress-overview">
+            <div class="overview-grid">
+                <div class="overview-card streaks">
+                    <div class="card-icon">🔥</div>
+                    <div class="card-number">5</div>
+                    <div class="card-label">Day Streak</div>
+                    <div class="card-trend trend-up">↗ +2 days</div>
+                </div>
+                
+                <div class="overview-card achievements">
+                    <div class="card-icon">🏆</div>
+                    <div class="card-number">12</div>
+                    <div class="card-label">Achievements</div>
+                    <div class="card-trend trend-up">↗ +3 this week</div>
+                </div>
+                
+                <div class="overview-card skills">
+                    <div class="card-icon">⭐</div>
+                    <div class="card-number">3</div>
+                    <div class="card-label">Active Skills</div>
+                    <div class="card-trend trend-up">↗ Level up soon</div>
+                </div>
+                
+                <div class="overview-card time">
+                    <div class="card-icon">⏱️</div>
+                    <div class="card-number">18h</div>
+                    <div class="card-label">This Week</div>
+                    <div class="card-trend trend-up">↗ +4h vs last week</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Weekly Activity Chart -->
+        <div class="chart-section">
+            <h2 class="section-title">📊 Weekly Activity</h2>
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Hours by Activity</div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color surfing"></div>
+                            <span>Surfing</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color guitar"></div>
+                            <span>Guitar</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color reading"></div>
+                            <span>Reading</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bar-chart">
+                    <div class="bar-group">
+                        <div class="bars">
+                            <div class="bar surfing" style="height: 40px;"></div>
+                            <div class="bar guitar" style="height: 60px;"></div>
+                            <div class="bar reading" style="height: 20px;"></div>
+                        </div>
+                        <div class="day-label">Mon</div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bars">
+                            <div class="bar surfing" style="height: 80px;"></div>
+                            <div class="bar guitar" style="height: 40px;"></div>
+                            <div class="bar reading" style="height: 30px;"></div>
+                        </div>
+                        <div class="day-label">Tue</div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bars">
+                            <div class="bar surfing" style="height: 60px;"></div>
+                            <div class="bar guitar" style="height: 80px;"></div>
+                            <div class="bar reading" style="height: 25px;"></div>
+                        </div>
+                        <div class="day-label">Wed</div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bars">
+                            <div class="bar surfing" style="height: 100px;"></div>
+                            <div class="bar guitar" style="height: 50px;"></div>
+                            <div class="bar reading" style="height: 40px;"></div>
+                        </div>
+                        <div class="day-label">Thu</div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bars">
+                            <div class="bar surfing" style="height: 70px;"></div>
+                            <div class="bar guitar" style="height: 90px;"></div>
+                            <div class="bar reading" style="height: 20px;"></div>
+                        </div>
+                        <div class="day-label">Fri</div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bars">
+                            <div class="bar surfing" style="height: 85px;"></div>
+                            <div class="bar guitar" style="height: 70px;"></div>
+                            <div class="bar reading" style="height: 45px;"></div>
+                        </div>
+                        <div class="day-label">Sat</div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bars">
+                            <div class="bar surfing" style="height: 90px;"></div>
+                            <div class="bar guitar" style="height: 60px;"></div>
+                            <div class="bar reading" style="height: 35px;"></div>
+                        </div>
+                        <div class="day-label">Sun</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Skills Progress -->
+        <div class="skills-progress">
+            <h2 class="section-title">🎯 Skill Progress</h2>
+            
+            <div class="skill-progress-item">
+                <div class="skill-header">
+                    <div class="skill-info">
+                        <div class="skill-icon">🏄</div>
+                        <div class="skill-name">Surfing</div>
+                    </div>
+                    <div class="skill-level">Level 8</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill surfing"></div>
+                </div>
+                <div class="progress-stats">
+                    <span>1,875 / 2,500 XP</span>
+                    <span>75% to Level 9</span>
+                </div>
+            </div>
+            
+            <div class="skill-progress-item">
+                <div class="skill-header">
+                    <div class="skill-info">
+                        <div class="skill-icon">🎸</div>
+                        <div class="skill-name">Guitar</div>
+                    </div>
+                    <div class="skill-level">Level 6</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill guitar"></div>
+                </div>
+                <div class="progress-stats">
+                    <span>1,200 / 2,000 XP</span>
+                    <span>60% to Level 7</span>
+                </div>
+            </div>
+            
+            <div class="skill-progress-item">
+                <div class="skill-header">
+                    <div class="skill-info">
+                        <div class="skill-icon">🛹</div>
+                        <div class="skill-name">Skateboard</div>
+                    </div>
+                    <div class="skill-level">Level 3</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill skateboard"></div>
+                </div>
+                <div class="progress-stats">
+                    <span>400 / 1,000 XP</span>
+                    <span>40% to Level 4</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Achievements Gallery -->
+        <div class="achievements-section">
+            <h2 class="section-title">🏆 Achievement Gallery</h2>
+            <div class="achievements-grid">
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon">🌊</div>
+                    <div class="achievement-name">Wave Master</div>
+                </div>
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon">🎵</div>
+                    <div class="achievement-name">Chord Hero</div>
+                </div>
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon">🔥</div>
+                    <div class="achievement-name">Streak Keeper</div>
+                </div>
+                <div class="achievement-card locked">
+                    <div class="achievement-icon">⚡</div>
+                    <div class="achievement-name">Speed Reader</div>
+                </div>
+                <div class="achievement-card locked">
+                    <div class="achievement-icon">🎯</div>
+                    <div class="achievement-name">Perfectionist</div>
+                </div>
+                <div class="achievement-card locked">
+                    <div class="achievement-icon">🚀</div>
+                    <div class="achievement-name">Level Master</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Insights -->
+        <div class="insights-section">
+            <h2 class="section-title">🤖 AI Insights</h2>
+            
+            <div class="insight-card">
+                <div class="insight-content">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-text">
+                        Your surfing sessions are 40% longer on weekends. Consider scheduling practice sessions during optimal tide times.
+                    </div>
+                    <button class="insight-action">View Tide Schedule</button>
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-content">
+                    <div class="insight-icon">🎸</div>
+                    <div class="insight-text">
+                        You're close to a guitar breakthrough! Practice fingerpicking for 15 more minutes to unlock the next level.
+                    </div>
+                    <button class="insight-action">Start Practice</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

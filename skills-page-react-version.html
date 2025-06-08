@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills Page - Life Logging App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #ffffff;
+            color: #0d141c;
+            max-width: 390px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        .emoji {
+            font-family: -apple-system, "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        
+        .container {
+            padding-bottom: 80px;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 16px;
+            border-bottom: 1px solid #dadada;
+        }
+        
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin: 0 -8px;
+        }
+        
+        .page-title {
+            font-size: 21px;
+            font-weight: 600;
+            color: #0d141c;
+        }
+        
+        /* Search */
+        .search-section {
+            padding: 16px;
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .search-bar {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #dadada;
+            border-radius: 8px;
+            background: #f7f7f7;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .search-bar::placeholder {
+            color: #707070;
+        }
+        
+        .search-bar:focus {
+            outline: none;
+            border-color: #0d141c;
+        }
+        
+        /* Compact Stats */
+        .stats-compact {
+            padding: 0 16px 24px;
+        }
+        
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #f7f7f7;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+        
+        .stat-number {
+            font-weight: 600;
+            color: #0d141c;
+        }
+        
+        .stat-label {
+            color: #707070;
+        }
+        
+        .stat-divider {
+            color: #dadada;
+        }
+        
+        /* Section */
+        .section {
+            padding: 0 16px 24px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0d141c;
+        }
+        
+        .sort-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f7f7f7;
+            border: 1px solid #dadada;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #707070;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .sort-btn:hover {
+            background: #dadada;
+        }
+        
+        /* Skills List */
+        .skills-list {
+            background: white;
+            border: 1px solid #dadada;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .skill-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid #dadada;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .skill-item:last-child {
+            border-bottom: none;
+        }
+        
+        .skill-item:hover {
+            background: #f7f7f7;
+        }
+        
+        .skill-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .skill-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .skill-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0d141c;
+            margin-bottom: 4px;
+        }
+        
+        .skill-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14px;
+            color: #707070;
+        }
+        
+        .skill-action {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        /* Suggestions */
+        .suggestions-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 16px;
+        }
+        
+        .suggestion-card {
+            flex-shrink: 0;
+            width: 200px;
+        }
+        
+        .suggestion-icon {
+            width: 100%;
+            height: 96px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        
+        .suggestion-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0d141c;
+            margin-bottom: 4px;
+        }
+        
+        .suggestion-desc {
+            font-size: 14px;
+            color: #707070;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 390px;
+            background: white;
+            border-top: 1px solid #dadada;
+            padding: 12px 16px;
+        }
+        
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #707070;
+            font-size: 10px;
+            padding: 8px;
+        }
+        
+        .nav-item.active {
+            color: #0d141c;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="header-btn">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            
+            <h1 class="page-title">My skills</h1>
+            
+            <button class="header-btn">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-section">
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Search">
+            </div>
+        </div>
+
+        <!-- Compact Stats -->
+        <div class="stats-compact">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-number">12</span>
+                    <span class="stat-label">skills</span>
+                </div>
+                <span class="stat-divider">•</span>
+                <div class="stat-item">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">active</span>
+                </div>
+                <span class="stat-divider">•</span>
+                <div class="stat-item">
+                    <span class="stat-number">847h</span>
+                    <span class="stat-label">total</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Skills Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">All skills</h2>
+                <button class="sort-btn">
+                    <span>Recent</span>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Skills List -->
+            <div class="skills-list">
+                <div class="skill-item">
+                    <div class="skill-icon emoji" style="background-color: #B3E5FC; font-size: 24px;">
+                        🏄‍♂️
+                    </div>
+                    <div class="skill-info">
+                        <div class="skill-name">Surfing</div>
+                        <div class="skill-meta">
+                            <span>140h total</span>
+                            <span>Last: Today</span>
+                        </div>
+                    </div>
+                    <div class="skill-action">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 14c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 4 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 6 10c.55 0 1.02.196 1.413.587C7.804 10.98 8 11.45 8 12s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 6 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 10 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 12 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 12 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 16 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 18 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 18 14z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-icon emoji" style="background-color: #FFCDD2; font-size: 24px;">
+                        🎸
+                    </div>
+                    <div class="skill-info">
+                        <div class="skill-name">Guitar</div>
+                        <div class="skill-meta">
+                            <span>20h total</span>
+                            <span>Last: Yesterday</span>
+                        </div>
+                    </div>
+                    <div class="skill-action">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 14c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 4 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 6 10c.55 0 1.02.196 1.413.587C7.804 10.98 8 11.45 8 12s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 6 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 10 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 12 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 12 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 16 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 18 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 18 14z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-icon emoji" style="background-color: #E1F5FE; font-size: 24px;">
+                        🎨
+                    </div>
+                    <div class="skill-info">
+                        <div class="skill-name">Painting</div>
+                        <div class="skill-meta">
+                            <span>60h total</span>
+                            <span>Last: Last Week</span>
+                        </div>
+                    </div>
+                    <div class="skill-action">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 14c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 4 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 6 10c.55 0 1.02.196 1.413.587C7.804 10.98 8 11.45 8 12s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 6 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 10 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 12 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 12 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 16 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 18 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 18 14z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-icon emoji" style="background-color: #FFF3E0; font-size: 24px;">
+                        📚
+                    </div>
+                    <div class="skill-info">
+                        <div class="skill-name">Reading</div>
+                        <div class="skill-meta">
+                            <span>35h total</span>
+                            <span>Last: Recently</span>
+                        </div>
+                    </div>
+                    <div class="skill-action">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 14c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 4 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 6 10c.55 0 1.02.196 1.413.587C7.804 10.98 8 11.45 8 12s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 6 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 10 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 12 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 12 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 16 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 18 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 18 14z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-icon emoji" style="background-color: #F3E5F5; font-size: 24px;">
+                        🏋️‍♂️
+                    </div>
+                    <div class="skill-info">
+                        <div class="skill-name">Weightlifting</div>
+                        <div class="skill-meta">
+                            <span>80h total</span>
+                            <span>Last: A Few Days Ago</span>
+                        </div>
+                    </div>
+                    <div class="skill-action">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 14c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 4 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 6 10c.55 0 1.02.196 1.413.587C7.804 10.98 8 11.45 8 12s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 6 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 10 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 12 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 12 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 16 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 18 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 18 14z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-icon emoji" style="background-color: #FCE4EC; font-size: 24px;">
+                        🎤
+                    </div>
+                    <div class="skill-info">
+                        <div class="skill-name">Singing</div>
+                        <div class="skill-meta">
+                            <span>50h total</span>
+                            <span>Last: This Month</span>
+                        </div>
+                    </div>
+                    <div class="skill-action">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 14c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 4 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 6 10c.55 0 1.02.196 1.413.587C7.804 10.98 8 11.45 8 12s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 6 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 10 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 12 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 12 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 16 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 18 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 18 14z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-icon emoji" style="background-color: #E8F5E8; font-size: 24px;">
+                        🧘‍♀️
+                    </div>
+                    <div class="skill-info">
+                        <div class="skill-name">Yoga</div>
+                        <div class="skill-meta">
+                            <span>45h total</span>
+                            <span>Last: Yesterday</span>
+                        </div>
+                    </div>
+                    <div class="skill-action">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 14c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 4 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 6 10c.55 0 1.02.196 1.413.587C7.804 10.98 8 11.45 8 12s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 6 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 10 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 12 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 12 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 16 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 18 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 18 14z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-icon emoji" style="background-color: #FFF8E1; font-size: 24px;">
+                        🍳
+                    </div>
+                    <div class="skill-info">
+                        <div class="skill-name">Cooking</div>
+                        <div class="skill-meta">
+                            <span>30h total</span>
+                            <span>Last: Today</span>
+                        </div>
+                    </div>
+                    <div class="skill-action">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 14c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 4 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 6 10c.55 0 1.02.196 1.413.587C7.804 10.98 8 11.45 8 12s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 6 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 10 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 12 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 12 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 16 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 18 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 18 14z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="skill-item">
+                    <div class="skill-icon emoji" style="background-color: #E3F2FD; font-size: 24px;">
+                        🚴‍♂️
+                    </div>
+                    <div class="skill-info">
+                        <div class="skill-name">Cycling</div>
+                        <div class="skill-meta">
+                            <span>25h total</span>
+                            <span>Last: Last Weekend</span>
+                        </div>
+                    </div>
+                    <div class="skill-action">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 14c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 4 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 6 10c.55 0 1.02.196 1.413.587C7.804 10.98 8 11.45 8 12s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 6 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 10 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 12 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 12 14zm6 0c-.55 0-1.02-.196-1.413-.587A1.93 1.93 0 0 1 16 12c0-.55.196-1.02.587-1.413A1.93 1.93 0 0 1 18 10c.55 0 1.02.196 1.413.587.391.393.587.863.587 1.413s-.196 1.02-.587 1.413A1.93 1.93 0 0 1 18 14z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggested for You Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Suggested for you</h2>
+                <span style="font-size: 14px; color: #707070;">View all</span>
+            </div>
+            
+            <div class="suggestions-container">
+                <div class="suggestion-card">
+                    <div class="suggestion-icon emoji" style="background-color: #E8F5E8; font-size: 32px;">
+                        🌱
+                    </div>
+                    <div class="suggestion-title">Gardening</div>
+                    <div class="suggestion-desc">Just something new for you to try, take a look</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-items">
+            <a href="#" class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div>Home</div>
+            </a>
+            <a href="#" class="nav-item active">
+                <div class="nav-icon">📊</div>
+                <div>Skills</div>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">🔍</div>
+                <div>Discovery</div>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">⭐</div>
+                <div>Highlights</div>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div>Profile</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

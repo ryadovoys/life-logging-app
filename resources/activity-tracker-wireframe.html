@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Tracker - Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            padding: 16px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f8f9fa;
+        }
+        
+        .add-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #333;
+            color: white;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .section {
+            margin: 24px 16px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .view-all {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .highlight-text {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .skill-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .skill-card.surfing {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+        
+        .skill-card.guitar {
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+        }
+        
+        .skill-card.skateboard {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+        }
+        
+        .streak-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255,255,255,0.9);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .skill-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 8px;
+            margin: 16px 0 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .skill-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .skill-stats {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .updates-list {
+            list-style: none;
+        }
+        
+        .update-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        
+        .update-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .update-content {
+            flex: 1;
+        }
+        
+        .update-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .update-meta {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .more-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+        }
+        
+        .share-section {
+            background: linear-gradient(135deg, #e1f5fe, #b3e5fc);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 16px;
+        }
+        
+        .share-text {
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.8);
+            color: #333;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .suggestion-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .suggestion-card.punk {
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+        }
+        
+        .suggestion-card.tennis {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6c757d;
+            font-size: 12px;
+        }
+        
+        .nav-item.active {
+            color: #007bff;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .skip-link {
+            text-align: center;
+            margin-top: 12px;
+        }
+        
+        .skip-link a {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <input type="text" class="search-bar" placeholder="Search">
+            <button class="add-btn">+</button>
+        </div>
+        
+        <!-- Highlight Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Highlight</h2>
+                <a href="#" class="view-all">View all</a>
+            </div>
+            <div class="highlight-text">
+                You're in flow with 2 activities right now
+            </div>
+        </div>
+        
+        <!-- Current Skills -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Current skills</h2>
+                <a href="#" class="view-all">View all</a>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card surfing">
+                    <div class="streak-badge">🔥 5-day streak</div>
+                    <div class="skill-icon">🏄</div>
+                    <div class="skill-name">Surfing</div>
+                    <div class="skill-stats">Est. total: 100h<br>Last: Today</div>
+                </div>
+                <div class="skill-card guitar">
+                    <div class="skill-icon">🎸</div>
+                    <div class="skill-name">Guitar</div>
+                    <div class="skill-stats">Est. total: 100h<br>Last: 5 days ago</div>
+                </div>
+                <div class="skill-card skateboard">
+                    <div class="skill-icon">🛹</div>
+                    <div class="skill-name">Skateboard</div>
+                    <div class="skill-stats">Est. total: 50h<br>Last: 5 days ago</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Updates -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Recent updates</h2>
+                <a href="#" class="view-all">View all</a>
+            </div>
+            <ul class="updates-list">
+                <li class="update-item">
+                    <div class="update-icon" style="background: linear-gradient(135deg, #fce4ec, #f8bbd9);">🎸</div>
+                    <div class="update-content">
+                        <div class="update-title">Guitar</div>
+                        <div style="font-weight: 500; margin-bottom: 2px;">Playing over an hour</div>
+                        <div class="update-meta">5h ago • Transcript</div>
+                    </div>
+                    <button class="more-btn">⋯</button>
+                </li>
+                <li class="update-item">
+                    <div class="update-icon" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">🏄</div>
+                    <div class="update-content">
+                        <div class="update-title">Surfing</div>
+                        <div style="font-weight: 500; margin-bottom: 2px;">1:36 minutes of surfing</div>
+                        <div class="update-meta">6h ago • ❤️ Health App</div>
+                    </div>
+                    <button class="more-btn">⋯</button>
+                </li>
+                <li class="update-item">
+                    <div class="update-icon" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);">📚</div>
+                    <div class="update-content">
+                        <div class="update-title">Reading</div>
+                        <div style="font-weight: 500; margin-bottom: 2px;">43 minutes of reading</div>
+                        <div class="update-meta">Last week • 📖 Books App</div>
+                    </div>
+                    <button class="more-btn">⋯</button>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Up Next -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Up next</h2>
+                <a href="#" class="view-all">View all</a>
+            </div>
+            <div class="update-item">
+                <div class="update-icon" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">🏄</div>
+                <div class="update-content">
+                    <div class="update-title">Surfing</div>
+                    <div style="font-weight: 500; margin-bottom: 2px;">Land a smooth cutback</div>
+                    <div class="update-meta">Medium</div>
+                </div>
+                <button class="more-btn">⋯</button>
+            </div>
+        </div>
+        
+        <!-- Share Updates -->
+        <div class="share-section">
+            <div class="share-text">
+                Let's update your musical journey — have you played piano recently?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-secondary">No</button>
+                <button class="btn btn-primary">Yes</button>
+            </div>
+            <div class="skip-link">
+                <a href="#">Skip to the next one</a>
+            </div>
+        </div>
+        
+        <!-- Suggested for You -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Suggested for you</h2>
+                <a href="#" class="view-all">View all</a>
+            </div>
+            <div class="suggestions-grid">
+                <div class="suggestion-card punk">
+                    <div class="skill-icon">🤘</div>
+                    <div class="skill-name">Punk Rock</div>
+                    <div class="skill-stats">Because you like guitar and skateboarding</div>
+                </div>
+                <div class="suggestion-card tennis">
+                    <div class="skill-icon">🎾</div>
+                    <div class="skill-name">Tennis</div>
+                    <div class="skill-stats">Popular in your area</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <div>Home</div>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div>Skills</div>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">🔍</div>
+                <div>Discovery</div>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">💬</div>
+                <div>Highlights</div>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div>Profile</div>
+            </a>
+        </nav>
+    </div>
+</body>
+</html>

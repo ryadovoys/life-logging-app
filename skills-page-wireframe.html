@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills Page - Life Logging App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #ffffff;
+            color: #0d141c;
+            max-width: 390px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        .container {
+            padding-bottom: 80px;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 16px 16px;
+            border-bottom: 1px solid #dadada;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        .page-title {
+            font-size: 21px;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+            margin: 0 16px;
+        }
+        
+        .add-skill-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        /* Search and Filter */
+        .search-section {
+            padding: 16px;
+            border-bottom: 1px solid #dadada;
+        }
+        
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dadada;
+            border-radius: 8px;
+            background: #f7f7f7;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        
+        .filter-tab {
+            padding: 8px 16px;
+            border: 1px solid #dadada;
+            border-radius: 8px;
+            background: #f7f7f7;
+            font-size: 12px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        
+        .filter-tab.active {
+            background: #0d141c;
+            color: white;
+            border-color: #0d141c;
+        }
+        
+        /* Quick Stats */
+        .quick-stats {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            background: #f7f7f7;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        
+        .quick-stat {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+        
+        .quick-stat-number {
+            font-weight: 600;
+            color: #0d141c;
+        }
+        
+        .quick-stat-label {
+            color: #707070;
+        }
+        
+        .quick-stat-divider {
+            color: #dadada;
+            margin: 0 12px;
+        }
+        
+        /* Skills Section */
+        .skills-section {
+            padding: 20px 16px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .sort-dropdown {
+            position: relative;
+        }
+        
+        .sort-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            background: #f7f7f7;
+            border: 1px solid #dadada;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            color: #707070;
+        }
+        
+        .sort-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #dadada;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 10;
+            min-width: 160px;
+            margin-top: 4px;
+        }
+        
+        .sort-dropdown-content.show {
+            display: block;
+        }
+        
+        .sort-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .sort-option:last-child {
+            border-bottom: none;
+        }
+        
+        .sort-option:hover {
+            background: #f7f7f7;
+        }
+        
+        .sort-option.active {
+            background: #0d141c;
+            color: white;
+        }
+        
+        /* List View */
+        .skills-list {
+            display: block;
+        }
+        
+        .skill-list-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #dadada;
+            cursor: pointer;
+        }
+        
+        .skill-list-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .skill-list-info {
+            flex: 1;
+        }
+        
+        .skill-list-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .skill-list-meta {
+            font-size: 12px;
+            color: #707070;
+        }
+        
+        .skill-list-action {
+            font-size: 20px;
+            color: #707070;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 390px;
+            background: white;
+            border-top: 1px solid #dadada;
+            padding: 12px 16px;
+        }
+        
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #707070;
+            font-size: 10px;
+        }
+        
+        .nav-item.active {
+            color: #0d141c;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #0d141c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn">←</button>
+            <h1 class="page-title">Skills</h1>
+            <button class="add-skill-btn">+</button>
+        </div>
+        
+        <!-- Search and Filter -->
+        <div class="search-section">
+            <input type="text" class="search-bar" placeholder="Search skills...">
+            <div class="filter-tabs">
+                <div class="filter-tab active">All</div>
+                <div class="filter-tab">Active</div>
+                <div class="filter-tab">Physical</div>
+                <div class="filter-tab">Creative</div>
+                <div class="filter-tab">Mental</div>
+                <div class="filter-tab">Social</div>
+            </div>
+        </div>
+        
+        <!-- Skills Section -->
+        <div class="skills-section">
+            <div class="section-header">
+                <h2 class="section-title">My Skills</h2>
+                <div class="sort-dropdown">
+                    <button class="sort-btn" onclick="toggleSort()">
+                        <span id="sortLabel">Recent Activity</span>
+                        <span>▼</span>
+                    </button>
+                    <div class="sort-dropdown-content" id="sortDropdown">
+                        <div class="sort-option active" onclick="sortSkills('recent')">Recent Activity</div>
+                        <div class="sort-option" onclick="sortSkills('alphabetical')">A-Z</div>
+                        <div class="sort-option" onclick="sortSkills('totalTime')">Total Time</div>
+                        <div class="sort-option" onclick="sortSkills('streak')">Longest Streak</div>
+                        <div class="sort-option" onclick="sortSkills('progress')">Most Progress</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Stats Bar -->
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <span class="quick-stat-number">8</span>
+                    <span class="quick-stat-label">skills</span>
+                </div>
+                <div class="quick-stat-divider">•</div>
+                <div class="quick-stat">
+                    <span class="quick-stat-number">6</span>
+                    <span class="quick-stat-label">active this week</span>
+                </div>
+                <div class="quick-stat-divider">•</div>
+                <div class="quick-stat">
+                    <span class="quick-stat-number">847h</span>
+                    <span class="quick-stat-label">total</span>
+                </div>
+            </div>
+            
+            <!-- List View -->
+            <div class="skills-list" id="skillsList">
+                <div class="skill-list-item" data-recent="0" data-alpha="guitar" data-total="100" data-streak="0" data-progress="85">
+                    <div class="skill-list-icon" style="background: #FFCDD2;">🎸</div>
+                    <div class="skill-list-info">
+                        <div class="skill-list-title">Guitar</div>
+                        <div class="skill-list-meta">100h total • Last: Today</div>
+                    </div>
+                    <div class="skill-list-action">›</div>
+                </div>
+                
+                <div class="skill-list-item" data-recent="0" data-alpha="surfing" data-total="140" data-streak="5" data-progress="95">
+                    <div class="skill-list-icon" style="background: #B3E5FC;">🏄</div>
+                    <div class="skill-list-info">
+                        <div class="skill-list-title">Surfing</div>
+                        <div class="skill-list-meta">140h total • 🔥 5-day streak</div>
+                    </div>
+                    <div class="skill-list-action">›</div>
+                </div>
+                
+                <div class="skill-list-item" data-recent="1" data-alpha="meditation" data-total="67" data-streak="0" data-progress="45">
+                    <div class="skill-list-icon" style="background: #FFF3E0;">🧘</div>
+                    <div class="skill-list-info">
+                        <div class="skill-list-title">Meditation</div>
+                        <div class="skill-list-meta">67h total • Last: Yesterday</div>
+                    </div>
+                    <div class="skill-list-action">›</div>
+                </div>
+                
+                <div class="skill-list-item" data-recent="2" data-alpha="skateboard" data-total="85" data-streak="0" data-progress="60">
+                    <div class="skill-list-icon" style="background: #FFF9C4;">🛹</div>
+                    <div class="skill-list-info">
+                        <div class="skill-list-title">Skateboard</div>
+                        <div class="skill-list-meta">85h total • Last: 2 days ago</div>
+                    </div>
+                    <div class="skill-list-action">›</div>
+                </div>
+                
+                <div class="skill-list-item" data-recent="3" data-alpha="running" data-total="156" data-streak="4" data-progress="78">
+                    <div class="skill-list-icon" style="background: #E0F2F1;">🏃</div>
+                    <div class="skill-list-info">
+                        <div class="skill-list-title">Running</div>
+                        <div class="skill-list-meta">156h total • 🔥 4-day streak</div>
+                    </div>
+                    <div class="skill-list-action">›</div>
+                </div>
+                
+                <div class="skill-list-item" data-recent="4" data-alpha="coding" data-total="412" data-streak="8" data-progress="92">
+                    <div class="skill-list-icon" style="background: #F3E5F5;">💻</div>
+                    <div class="skill-list-info">
+                        <div class="skill-list-title">Coding</div>
+                        <div class="skill-list-meta">412h total • 🔥 8-day streak</div>
+                    </div>
+                    <div class="skill-list-action">›</div>
+                </div>
+                
+                <div class="skill-list-item" data-recent="5" data-alpha="reading" data-total="234" data-streak="12" data-progress="88">
+                    <div class="skill-list-icon" style="background: #E8F5E8;">📚</div>
+                    <div class="skill-list-info">
+                        <div class="skill-list-title">Reading</div>
+                        <div class="skill-list-meta">234h total • 🔥 12-day streak</div>
+                    </div>
+                    <div class="skill-list-action">›</div>
+                </div>
+                
+                <div class="skill-list-item" data-recent="7" data-alpha="drawing" data-total="89" data-streak="0" data-progress="35">
+                    <div class="skill-list-icon" style="background: #FCE4EC;">🎨</div>
+                    <div class="skill-list-info">
+                        <div class="skill-list-title">Drawing</div>
+                        <div class="skill-list-meta">89h total • Last: 1 week ago</div>
+                    </div>
+                    <div class="skill-list-action">›</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Action Button -->
+    <button class="fab">+</button>
+    
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-items">
+            <a href="#" class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div>Home</div>
+            </a>
+            <a href="#" class="nav-item active">
+                <div class="nav-icon">📊</div>
+                <div>Skills</div>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">🔍</div>
+                <div>Discovery</div>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">⭐</div>
+                <div>Highlights</div>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div>Profile</div>
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Filter tabs functionality
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Sort functionality
+        function toggleSort() {
+            const dropdown = document.getElementById('sortDropdown');
+            dropdown.classList.toggle('show');
+        }
+        
+        function sortSkills(sortType) {
+            const skillsList = document.getElementById('skillsList');
+            const skills = Array.from(skillsList.children);
+            const sortLabel = document.getElementById('sortLabel');
+            
+            // Update active state
+            document.querySelectorAll('.sort-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update button label
+            const labels = {
+                'recent': 'Recent Activity',
+                'alphabetical': 'A-Z',
+                'totalTime': 'Total Time',
+                'streak': 'Longest Streak',
+                'progress': 'Most Progress'
+            };
+            sortLabel.textContent = labels[sortType];
+            
+            // Sort the skills
+            skills.sort((a, b) => {
+                switch(sortType) {
+                    case 'recent':
+                        return parseInt(a.dataset.recent) - parseInt(b.dataset.recent);
+                    case 'alphabetical':
+                        return a.dataset.alpha.localeCompare(b.dataset.alpha);
+                    case 'totalTime':
+                        return parseInt(b.dataset.total) - parseInt(a.dataset.total);
+                    case 'streak':
+                        return parseInt(b.dataset.streak) - parseInt(a.dataset.streak);
+                    case 'progress':
+                        return parseInt(b.dataset.progress) - parseInt(a.dataset.progress);
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Re-append sorted skills
+            skills.forEach(skill => skillsList.appendChild(skill));
+            
+            // Close dropdown
+            document.getElementById('sortDropdown').classList.remove('show');
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('sortDropdown');
+            const sortBtn = document.querySelector('.sort-btn');
+            
+            if (!sortBtn.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

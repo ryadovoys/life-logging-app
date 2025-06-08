@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improved Activity Detail - Wireframe</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+            padding: 0;
+        }
+
+        /* Wireframe container */
+        .wireframe-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: 100vh;
+            border: 2px solid #ccc;
+        }
+
+        /* Header with navigation */
+        .wf-header {
+            background: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .wf-back-btn {
+            border: 1px solid #666;
+            background: #eee;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .wf-breadcrumb {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Activity overview card */
+        .wf-activity-overview {
+            background: #fff;
+            border: 1px solid #ddd;
+            margin: 16px;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .wf-activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .wf-activity-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .wf-activity-meta {
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            gap: 16px;
+        }
+
+        .wf-menu-dots {
+            border: 1px solid #ccc;
+            padding: 4px 8px;
+            background: #f9f9f9;
+        }
+
+        /* Key insights card */
+        .wf-insights-card {
+            background: #f8f9ff;
+            border: 1px solid #d4d4ff;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .wf-insights-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        /* Content sections */
+        .wf-content-section {
+            background: #fff;
+            border: 1px solid #ddd;
+            margin: 8px 16px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .wf-section-header {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .wf-section-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .wf-expand-icon {
+            border: 1px solid #999;
+            padding: 4px 8px;
+            background: #f0f0f0;
+        }
+
+        .wf-section-content {
+            padding: 16px;
+        }
+
+        .wf-text-block {
+            background: repeating-linear-gradient(to right, #ddd 0px, #ddd 8px, transparent 8px, transparent 16px);
+            height: 1em;
+            margin: 4px 0;
+        }
+
+        .wf-text-short {
+            width: 80%;
+        }
+
+        .wf-text-medium {
+            width: 95%;
+        }
+
+        /* Transcript preview */
+        .wf-transcript-preview {
+            background: #f8f9fa;
+            border: 1px dashed #ccc;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 8px 0;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        /* Action buttons */
+        .wf-action-section {
+            padding: 16px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            position: sticky;
+            bottom: 60px;
+        }
+
+        .wf-primary-action {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .wf-secondary-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .wf-secondary-btn {
+            flex: 1;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 10px 16px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        /* Bottom navigation */
+        .wf-bottom-nav {
+            background: #f5f5f5;
+            border-top: 1px solid #ddd;
+            padding: 8px 0;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            max-width: 100%;
+        }
+
+        .wf-nav-items {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .wf-nav-item {
+            padding: 8px;
+            border: 1px solid transparent;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .wf-nav-item.active {
+            border: 1px solid #666;
+            background: #eee;
+        }
+
+        /* Annotations */
+        .wf-annotation {
+            position: relative;
+            margin: 8px 0;
+        }
+
+        .wf-annotation-number {
+            position: absolute;
+            left: -24px;
+            top: 0;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .wf-annotation-note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <!-- Header with navigation -->
+        <header class="wf-header">
+            <div class="wf-back-btn">&larr;</div>
+            <div class="wf-breadcrumb">Recent Updates > Activity Detail</div>
+        </header>
+
+        <!-- Activity overview card -->
+        <div class="wf-activity-overview">
+            <div class="wf-activity-header">
+                <div>
+                    <h1 class="wf-activity-title">Playing over an hour</h1>
+                    <div class="wf-activity-meta">
+                        <span>Guitar</span>
+                        <span>Est. total: 100h</span>
+                        <span>Last: 5 days ago</span>
+                    </div>
+                </div>
+                <div class="wf-menu-dots">⋯</div>
+            </div>
+            
+            <div class="wf-insights-card">
+                <div class="wf-insights-label">Key Insight</div>
+                <div class="wf-text-block wf-text-medium"></div>
+                <div class="wf-text-block wf-text-short"></div>
+            </div>
+        </div>
+
+        <!-- Expandable description section -->
+        <div class="wf-content-section">
+            <div class="wf-section-header wf-annotation">
+                <div class="wf-annotation-number">1</div>
+                <div class="wf-section-title">Skill Description</div>
+                <div class="wf-expand-icon">⌄</div>
+            </div>
+            <div class="wf-section-content">
+                <div class="wf-text-block"></div>
+                <div class="wf-text-block wf-text-medium"></div>
+                <div class="wf-text-block wf-text-short"></div>
+            </div>
+        </div>
+
+        <!-- Transcript section -->
+        <div class="wf-content-section">
+            <div class="wf-section-header wf-annotation">
+                <div class="wf-annotation-number">2</div>
+                <div class="wf-section-title">AI Analysis</div>
+                <div class="wf-expand-icon">⌄</div>
+            </div>
+            <div class="wf-section-content">
+                <div class="wf-transcript-preview">
+                    [00:01] Focus on using your body weight and looking<br>
+                    where you want to go. Keep your knees bent<br>
+                    and your core engaged for stability...<br>
+                    <br>
+                    <a href="#">View full transcript →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related tips section (collapsed by default) -->
+        <div class="wf-content-section">
+            <div class="wf-section-header">
+                <div class="wf-section-title">Related Tips</div>
+                <div class="wf-expand-icon">></div>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="wf-action-section wf-annotation">
+            <div class="wf-annotation-number">3</div>
+            <button class="wf-primary-action">Continue Practice</button>
+            <div class="wf-secondary-actions">
+                <button class="wf-secondary-btn">Ask Rabbit</button>
+                <button class="wf-secondary-btn">Edit</button>
+            </div>
+        </div>
+
+        <!-- Bottom navigation -->
+        <nav class="wf-bottom-nav">
+            <div class="wf-nav-items">
+                <div class="wf-nav-item active">Home</div>
+                <div class="wf-nav-item">Skills</div>
+                <div class="wf-nav-item">Discovery</div>
+                <div class="wf-nav-item">Highlights</div>
+                <div class="wf-nav-item">Profile</div>
+            </div>
+        </nav>
+
+        <!-- Annotations -->
+        <div style="padding: 16px; background: #f8f9fa; margin-top: 80px;">
+            <h3>Wireframe Annotations</h3>
+            <div class="wf-annotation-note">
+                <strong>1. Progressive Disclosure:</strong> Expandable sections reduce cognitive load while keeping all content accessible
+            </div>
+            <div class="wf-annotation-note">
+                <strong>2. Enhanced Content Hierarchy:</strong> AI analysis gets dedicated section with clear visual treatment
+            </div>
+            <div class="wf-annotation-note">
+                <strong>3. Clear CTA Hierarchy:</strong> Primary action prominent, secondary actions grouped and de-emphasized
+            </div>
+        </div>
+    </div>
+</body>
+</html>

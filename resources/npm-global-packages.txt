@@ -1,0 +1,11 @@
+/Users/sergeyryadovoy/.npm-global/lib
+├── @anthropic-ai/claude-code@1.0.16
+├── @openai/codex@0.1.2504161551
+├── canvas-sketch-cli@1.11.20
+├── depcheck@1.4.7
+├── live-server@1.2.2
+├── npm@11.3.0
+├── npx@10.2.2
+├── ollama@0.5.10
+└── tailwindcss@4.0.1
+
