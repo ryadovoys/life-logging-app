@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BottomNavigation, PageHeader } from './ui';
 
 interface Skill {
@@ -92,7 +92,7 @@ interface SkillItemProps {
 
 const SkillItem: React.FC<SkillItemProps> = ({ skill, onClick }) => (
   <div 
-    className="flex items-center gap-4 py-3 px-0 border-b border-gray-40 last:border-b-0 cursor-pointer"
+    className="flex items-center gap-md py-sm px-0 border-b border-gray-40 last:border-b-0 cursor-pointer"
     onClick={onClick}
   >
     <div 
@@ -109,12 +109,12 @@ const SkillItem: React.FC<SkillItemProps> = ({ skill, onClick }) => (
       <h3 className="font-instrument font-semibold text-body text-black mb-0 text-left">
         {skill.name}
       </h3>
-      <div className="flex items-center gap-3 text-left">
-        <span className="font-instrument font-normal text-body-small text-gray-80 text-left">
+      <div className="flex items-center gap-sm text-left">
+        <span className="font-instrument font-normal text-caption text-gray-80 text-left">
           {skill.totalTime} total
         </span>
-        <div className="w-px h-3 bg-gray-40"></div>
-        <span className="font-instrument font-normal text-body-small text-gray-80 text-left">
+        <div className="w-px h-sm bg-gray-40"></div>
+        <span className="font-instrument font-normal text-caption text-gray-80 text-left">
           Last: {skill.lastActivity}
         </span>
       </div>
@@ -157,13 +157,13 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ onNavigateHome, onNaviga
         />
 
         {/* All Skills Section */}
-        <div className="px-4 pt-4">
-          <div className="flex items-center justify-between mb-4">
+        <div className="px-md pt-md">
+          <div className="flex items-center justify-between mb-md">
             <h2 className="font-instrument font-semibold text-h2 text-black">
               All skills
             </h2>
             
-            <button className="flex items-center gap-2 px-3 py-2 bg-gray-20 border border-gray-40 rounded-lg text-body-small text-gray-80">
+            <button className="flex items-center gap-xs px-sm py-xs bg-gray-20 border border-gray-40 rounded-ios text-caption text-gray-80">
               <span>Recent</span>
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />

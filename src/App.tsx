@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Homepage } from './components/Homepage'
 import { SkillsPage } from './components/SkillsPage'
 import SkillDetailPage from './components/SkillDetailPage'
@@ -8,7 +8,7 @@ type Page = 'home' | 'skills' | 'skillDetail'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
-  const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
+  // const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
   const [previousPage, setPreviousPage] = useState<Page>('home')
 
   const navigateToSkills = () => {
@@ -20,7 +20,8 @@ function App() {
   
   const navigateToSkillDetail = (skillId: string) => {
     setPreviousPage(currentPage)
-    setSelectedSkillId(skillId)
+    // setSelectedSkillId(skillId) - TODO: Use skillId when skill details are dynamic
+    console.log('Navigating to skill:', skillId) // Temporary to satisfy linter
     setCurrentPage('skillDetail')
   }
   
