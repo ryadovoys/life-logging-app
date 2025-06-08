@@ -38,17 +38,66 @@ npm run preview
 - **Activities:** Individual practice sessions that contribute to skills, with timestamps and source attribution
 - **AI Decision Framework:** Determines skill-worthiness of activities based on learning potential and user engagement
 
-### Design System
-Always refer to the latest Figma designs for UI patterns and implementation guidance:
+### Design System (Airbnb-Inspired Evolution)
+Always refer to the latest Figma designs for UI patterns and implementation guidance. Our design system follows Airbnb's "living organism" philosophy where components have personality and evolve independently.
 
-- **Typography:** Instrument Sans font family (400, 500, 600, 700 weights) for all text elements
+#### Component Philosophy
+- **Living Components:** Components are treated as organisms with function, personality, and independent evolution
+- **Required vs Optional Elements:** Each component defines required elements (title, emoji, progress) and optional elements (badges, dividers, etc.)
+- **Behavioral Properties:** Components can adapt based on context and usage patterns
+- **Single Source of Truth:** Figma designs + comprehensive component documentation
+
+#### Typography Scale (Enhanced)
+- **Display:** `text-display` (28px, font-weight: 700) - Hero text and major headlines
+- **Headline:** `text-headline` (24px, font-weight: 600) - Page titles
+- **Title:** `text-title` (21px, font-weight: 600) - Section headers (current H2)
+- **Subtitle:** `text-subtitle` (18px, font-weight: 600) - Subsection headers
+- **Body:** `text-body` (16px, font-weight: 600) - Main content text
+- **Caption:** `text-caption` (14px, font-weight: 400) - Supporting text
+- **Overline:** `text-overline` (12px, font-weight: 500) - Labels and descriptors
+
+#### Color System (Semantic Foundation)
+**Current Implementation:**
+- Gray 20: #f7f7f7 (light backgrounds)
+- Gray 40: #dadada (borders, dividers)  
+- Gray 80: #707070 (secondary text)
+- Black: #0d141c (primary text)
+- White: #ffffff (backgrounds)
+
+**Future Semantic Tokens (Template):**
+```css
+/* Primary Brand Colors - To be defined */
+--color-primary: /* Brand primary color */
+--color-primary-dark: /* Darker variant */
+--color-primary-light: /* Lighter variant */
+
+/* Semantic Status Colors - To be defined */
+--color-success: /* Success/positive state */
+--color-warning: /* Warning state */
+--color-error: /* Error/negative state */
+--color-info: /* Information state */
+
+/* Surface Elevation - To be defined */
+--color-surface-elevated: /* Elevated surfaces */
+--color-surface-sunken: /* Sunken surfaces */
+--color-surface-overlay: /* Modal/overlay backgrounds */
+```
+
+#### Spacing System (Systematic Scale)
+- **XS:** `--space-xs: 4px` - Micro spacing
+- **SM:** `--space-sm: 8px` - Small spacing (current border radius)
+- **MD:** `--space-md: 16px` - Medium spacing
+- **LG:** `--space-lg: 24px` - Large spacing  
+- **XL:** `--space-xl: 32px` - Extra large spacing
+- **XXL:** `--space-xxl: 48px` - Maximum spacing
+
+#### Component Standards
 - **Mobile-first:** All designs optimized for iPhone 16 Pro (393px viewport)
 - **Border Radius:** Consistent 8px radius for all buttons and interactive elements
-- **Colors:** Custom gray scale (#f7f7f7, #dadada, #707070) + black (#0d141c) + white (#ffffff)
 - **Component Library:** Fully implemented UI components in `/src/components/ui/`
-- **Design Source:** Use Figma as the single source of truth for visual design and implementation
 - **Emoji System:** Apple emojis with SF Pro font family for skill icons (`font-family: '-apple-system, "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif'`)
 - **No Hover States:** Mobile-optimized - no hover effects on cards or buttons
+- **Required/Optional Pattern:** All components define clear required vs optional element structure
 
 ### Key Features Implemented
 1. **Skill Portfolio:** Visual progress cards with streaks, time investment, and Apple emojis
@@ -78,19 +127,49 @@ Always refer to the latest Figma designs for UI patterns and implementation guid
 - Smart navigation remembers previous page for proper back button functionality
 - All text is left-aligned with dense spacing (mb-0 between text elements)
 
-## Available Components
+## Available Components (Living Organism Architecture)
 
-The following UI components are ready to use in `/src/components/ui/`:
+The following UI components are ready to use in `/src/components/ui/`, each designed as "living organisms" with required/optional elements:
 
+### Core Components
 - **Button** - Primary/secondary variants with 8px border radius
+  - *Required:* label, onClick
+  - *Optional:* variant, disabled, loading state
 - **SearchBar** - Search input with add button (used on homepage only)
+  - *Required:* placeholder, onSearch
+  - *Optional:* addButton, value, onChange
 - **SkillCard** - Progress cards with Apple emojis, streaks, time tracking, and overlay badges
-- **ActivityItem** - Timeline entries with emojis, source attribution, app icons, and flexible styling (showIcon/showBorder props)
+  - *Required:* title, emoji, progress
+  - *Optional:* streak, badge, timeTracking, overlay, divider
+- **ActivityItem** - Timeline entries with emojis, source attribution, app icons, and flexible styling
+  - *Required:* title, emoji, timestamp
+  - *Optional:* sourceApp, showIcon, showBorder, description, divider
+
+### Navigation Components  
 - **SectionHeader** - Section titles with styled "View all" buttons for navigation
-- **QuestionCard** - AI engagement prompts with action buttons and proper styling
-- **SuggestionCard** - Horizontal skill recommendation cards with Apple emojis
+  - *Required:* title
+  - *Optional:* viewAllButton, onViewAll, divider
 - **BottomNavigation** - Tab navigation with Material Symbols, FILL axis state changes, and navigation callbacks
+  - *Required:* currentPage, navigation callbacks
+  - *Optional:* customTabs, badge indicators
 - **PageHeader** - Page headers with back buttons, titles, add buttons, and emoji box support
+  - *Required:* title
+  - *Optional:* backButton, addButton, emojiBox, onBack, onAdd
+
+### Interactive Components
+- **QuestionCard** - AI engagement prompts with action buttons and proper styling
+  - *Required:* question, actions
+  - *Optional:* avatar, context, dismissable
+- **SuggestionCard** - Horizontal skill recommendation cards with Apple emojis
+  - *Required:* title, emoji
+  - *Optional:* description, category, difficulty, divider
+
+### Component Documentation Standards
+Each component includes:
+- TypeScript interface defining required vs optional props
+- Usage examples and guidelines
+- Behavioral properties and context adaptation
+- Evolution notes and version history
 
 ## Navigation Implementation
 
@@ -117,11 +196,14 @@ const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
 - All containers: `max-width: 393px; margin: 0 auto`
 - No side padding on mobile to prevent content cutoff
 
-**Typography:**
-- H2 headers: `text-h2` (21px, font-weight: 600)
-- Body text: `text-body` (16px, font-weight: 600) 
-- Small text: `text-body-small` (14px, font-weight: 400)
-- Descriptors: `text-descriptor` (12px, font-weight: 500)
+**Typography Scale (Enhanced System):**
+- Display: `text-display` (28px, font-weight: 700) - Hero text and major headlines
+- Headline: `text-headline` (24px, font-weight: 600) - Page titles
+- Title: `text-title` (21px, font-weight: 600) - Section headers (current H2)
+- Subtitle: `text-subtitle` (18px, font-weight: 600) - Subsection headers
+- Body: `text-body` (16px, font-weight: 600) - Main content text
+- Caption: `text-caption` (14px, font-weight: 400) - Supporting text
+- Overline: `text-overline` (12px, font-weight: 500) - Labels and descriptors
 
 **Apple Emoji Rendering:**
 ```css
@@ -148,7 +230,15 @@ font-variation-settings: 'FILL' ${isActive ? 1 : 0}
 - Black: #0d141c (primary text)
 - White: #ffffff (backgrounds)
 
-**Spacing & Layout:**
+**Spacing System (Systematic Scale):**
+- XS: `--space-xs: 4px` - Micro spacing
+- SM: `--space-sm: 8px` - Small spacing (current border radius)
+- MD: `--space-md: 16px` - Medium spacing
+- LG: `--space-lg: 24px` - Large spacing
+- XL: `--space-xl: 32px` - Extra large spacing
+- XXL: `--space-xxl: 48px` - Maximum spacing
+
+**Layout Standards:**
 - Dense text spacing: `mb-0` between text elements
 - All text left-aligned: `text-left`
 - Consistent 8px border radius on all interactive elements
@@ -178,39 +268,53 @@ Skill Detail Page Features:
 Future planned flow:
 - **Skill Detail Page** → **Technique/Goal Detail** → **Deep Learning Content**
 
-## Component Reuse Guidelines
+## Component Reuse Guidelines (Living Organism Approach)
 
-**IMPORTANT:** When creating new pages or features, always follow these patterns:
+**IMPORTANT:** When creating new pages or features, follow the "living organism" philosophy:
 
-1. **Reuse Existing Components First**
-   - Check `/src/components/ui/` for available components before creating new ones
-   - Use ActivityItem for any timeline/list entries (supports showIcon/showBorder props)
-   - Use SectionHeader for all section titles with optional "View all" buttons
-   - Use PageHeader for consistent page headers with back buttons
-   - Use BottomNavigation for tab switching between main pages
+### 1. Reuse Existing Components First
+- Check `/src/components/ui/` for available components before creating new ones
+- Use ActivityItem for any timeline/list entries (supports required/optional element pattern)
+- Use SectionHeader for all section titles with optional "View all" buttons
+- Use PageHeader for consistent page headers with back buttons
+- Use BottomNavigation for tab switching between main pages
 
-2. **Follow Established Patterns**
-   - All pages should accept navigation props (`onNavigateToHome`, `onNavigateToSkills`, etc.)
-   - Use smart navigation with previousPage tracking for back buttons
-   - Follow 393px viewport with `max-w-[393px] mx-auto` containers
-   - Apply consistent spacing: `pb-20` for content, `mb-0` between text elements
-   - Use Apple emoji rendering with SF Pro font family
+### 2. Follow Living Component Patterns
+- **Required vs Optional Elements:** Define clear required and optional props for each component
+- **Behavioral Properties:** Components should adapt based on context and usage patterns
+- **Component Evolution:** Allow components to evolve independently with version tracking
+- **Documentation:** Include comprehensive prop documentation with usage examples
 
-3. **When to Create New Components**
-   - Only create new components when Figma shows a completely new UI pattern
-   - If existing components can't be adapted with props, create new ones
-   - Always follow the established design system (8px border radius, Material Symbols, etc.)
-   - Document new components in this file and add to `/src/components/ui/index.ts`
+### 3. Established Design Patterns
+- All pages should accept navigation props (`onNavigateToHome`, `onNavigateToSkills`, etc.)
+- Use smart navigation with previousPage tracking for back buttons
+- Follow 393px viewport with `max-w-[393px] mx-auto` containers
+- Apply systematic spacing using the spacing scale (`space-xs` through `space-xxl`)
+- Use enhanced typography scale (`text-display` through `text-overline`)
+- Use Apple emoji rendering with SF Pro font family
 
-4. **Material Symbols Usage**
-   - Use self-hosted Material Symbols with FILL axis for state changes
-   - Icons: home, star, explore, settings for bottom navigation
-   - Apply `font-variation-settings: 'FILL' ${isActive ? 1 : 0}` for state changes
+### 4. When to Create New Components
+- Only create new components when Figma shows a completely new UI pattern
+- If existing components can't be adapted with required/optional props, create new ones
+- Always follow the established design system (8px border radius, Material Symbols, spacing scale)
+- Document new components with required/optional element structure
+- Add to `/src/components/ui/index.ts` and update this documentation
 
-5. **App Icon Integration**
-   - Store PNG icons in `/public/` folder (e.g., `/health-app.png`)
-   - Use APP_ICONS mapping in ActivityItem component
-   - Support automatic icon detection by app name
+### 5. Design Token Integration
+- Use design tokens for all spacing (`--space-xs` through `--space-xxl`)
+- Apply enhanced typography scale (`text-display`, `text-headline`, etc.)
+- Implement systematic color tokens when semantic colors are defined
+- Maintain consistent component behavior across the design system
+
+### 6. Material Symbols Usage
+- Use self-hosted Material Symbols with FILL axis for state changes
+- Icons: home, star, explore, settings for bottom navigation
+- Apply `font-variation-settings: 'FILL' ${isActive ? 1 : 0}` for state changes
+
+### 7. App Icon Integration
+- Store PNG icons in `/public/` folder (e.g., `/health-app.png`)
+- Use APP_ICONS mapping in ActivityItem component
+- Support automatic icon detection by app name
 
 ## Claude Code Memories
 
