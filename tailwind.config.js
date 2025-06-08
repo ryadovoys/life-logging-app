@@ -22,7 +22,7 @@ export default {
       },
       fontSize: {
         'h2': '21px',
-        'body-large': '18px',
+        'body-large': '24px',
         'body': '16px', 
         'body-small': '14px',
         'descriptor': '12px',

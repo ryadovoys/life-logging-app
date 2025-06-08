@@ -60,15 +60,17 @@ Always refer to the latest Figma designs for UI patterns and implementation guid
 **✅ Completed:**
 - **Homepage** - Complete implementation with all sections (My skills, Recent activities, Learn next, Share updates, Suggested for you)
 - **Skills Page** - Full skills list with stats bar, search-free design, and proper navigation
-- **Navigation System** - Working navigation between Homepage and Skills page via "View all" buttons, back button, and bottom tabs
+- **Skill Detail Page** - Individual skill tracking with progress stats, highlights, recent updates, learn next, inspiration, and suggestions
+- **Navigation System** - Complete 3-page navigation flow: Homepage ↔ Skills Page ↔ Skill Detail Page
 - **Design System** - Complete UI component library with Apple emoji support
 - **Mobile Optimization** - iPhone 16 Pro (393px) viewport with proper carousel scrolling
 - **Typography System** - Instrument Sans with proper H2 (21px) and body text sizing
 
 **Components Architecture:**
-- All pages support navigation props (`onNavigateToHome`, `onNavigateToSkills`)
+- All pages support navigation props (`onNavigateToHome`, `onNavigateToSkills`, `onNavigateToSkillDetail`)
 - Bottom navigation handles page switching with active states
 - SectionHeader includes styled "View all" buttons (gray background, border, rounded)
+- SkillDetailPage component with comprehensive skill tracking features
 - All text is left-aligned with dense spacing (mb-0 between text elements)
 
 ## Available Components
@@ -88,14 +90,16 @@ The following UI components are ready to use in `/src/components/ui/`:
 
 **App.tsx** manages page state with:
 ```typescript
-type Page = 'home' | 'skills'
+type Page = 'home' | 'skills' | 'skillDetail'
 const [currentPage, setCurrentPage] = useState<Page>('home')
+const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
 ```
 
 **Navigation Methods:**
 - "View all" button in "My skills" section → Skills page
-- Back button in Skills page header → Homepage  
-- Bottom navigation tabs → Switch between pages
+- Click any skill in Skills page → Skill Detail page  
+- Back button in Skills/Detail pages → Previous page
+- Bottom navigation tabs → Switch between main pages
 - All navigation uses callback props passed down through components
 
 ## Design System Specifications
@@ -140,10 +144,18 @@ font-family: '-apple-system, "SF Pro Display", "SF Pro Icons", "Helvetica Neue",
 ## Navigation Flow
 
 Current implemented flow:
-- **Homepage** ↔ **Skills Page** (bidirectional via multiple navigation methods)
+- **Homepage** ↔ **Skills Page** ↔ **Skill Detail Page** (full 3-page navigation)
+
+Skill Detail Page Features:
+- **Progress Dashboard:** 4 color-coded stats (Est. total, Last entry, Hours this week, Monthly trend)
+- **Highlight Section:** AI-generated main goal with gray card background
+- **Recent Updates:** Timeline of surfing activities with Health App integration
+- **Learn Next:** 3 unlockable techniques with progression requirements  
+- **Inspiration:** Content recommendations from YouTube, Medium, Reddit with thumbnails
+- **Suggested Skills:** Related skill recommendations (e.g., Snowboarding based on surfing interest)
 
 Future planned flow:
-- **Skills Page** → **Individual Skill Detail** → **Technique/Goal Detail**
+- **Skill Detail Page** → **Technique/Goal Detail** → **Deep Learning Content**
 
 ## Claude Code Memories
 
@@ -153,3 +165,10 @@ Future planned flow:
 - No hover states on mobile components
 - Dense text spacing with mb-0 between elements
 - All text should be left-aligned
+
+## Collaboration Memory
+
+- Working on design in Figma as a creative teammate
+- Goal is to create amazing, user-friendly design
+- Excited to ideate, review, enhance, and create together
+- Focus on ease of use and great interaction

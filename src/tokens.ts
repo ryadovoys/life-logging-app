@@ -27,7 +27,7 @@ export const typography = {
     lineHeight: 1.43,
   },
   bodyLarge: {
-    fontSize: '18px',
+    fontSize: '24px',
     fontFamily: 'Instrument Sans',
     fontWeight: 400,
     lineHeight: 1.8,

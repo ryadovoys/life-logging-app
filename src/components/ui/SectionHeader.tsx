@@ -4,12 +4,14 @@ interface SectionHeaderProps {
   title: string;
   showViewAll?: boolean;
   onViewAll?: () => void;
+  buttonText?: string;
 }
 
 export const SectionHeader: React.FC<SectionHeaderProps> = ({
   title,
   showViewAll = true,
   onViewAll,
+  buttonText = "View all",
 }) => {
   return (
     <div className="flex items-center justify-between px-4 py-3">
@@ -20,9 +22,9 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
       {showViewAll && (
         <button
           onClick={onViewAll}
-          className="px-3 py-2 bg-gray-20 border border-gray-40 rounded-lg font-instrument font-normal text-body-small text-black"
+          className="px-3 py-2 bg-gray-20 border border-gray-40 rounded-lg font-instrument font-normal text-body-small text-gray-80"
         >
-          View all
+          {buttonText}
         </button>
       )}
     </div>

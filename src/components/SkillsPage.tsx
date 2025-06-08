@@ -130,13 +130,16 @@ const SkillItem: React.FC<SkillItemProps> = ({ skill, onClick }) => (
 
 interface SkillsPageProps {
   onNavigateHome?: () => void;
+  onNavigateToSkillDetail?: (skillId: string) => void;
 }
 
-export const SkillsPage: React.FC<SkillsPageProps> = ({ onNavigateHome }) => {
+export const SkillsPage: React.FC<SkillsPageProps> = ({ onNavigateHome, onNavigateToSkillDetail }) => {
   const [activeTab, setActiveTab] = useState('skills');
 
   const handleSkillClick = (skill: Skill) => {
-    console.log('Navigate to skill:', skill.name);
+    if (onNavigateToSkillDetail) {
+      onNavigateToSkillDetail(skill.id);
+    }
   };
 
   const handleAddSkill = () => {
