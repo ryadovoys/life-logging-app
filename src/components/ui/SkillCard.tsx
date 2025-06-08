@@ -7,6 +7,7 @@ interface SkillCardProps {
   streak?: number;
   color: string;
   emoji: string;
+  onClick?: () => void;
 }
 
 export const SkillCard: React.FC<SkillCardProps> = ({
@@ -16,10 +17,11 @@ export const SkillCard: React.FC<SkillCardProps> = ({
   streak,
   color,
   emoji,
+  onClick,
 }) => {
   return (
-    <div className="flex-shrink-0 w-[146px]">
-      <div className="relative mb-3">
+    <div className="flex-shrink-0 w-[146px]" onClick={onClick}>
+      <div className="relative mb-3 cursor-pointer">
         <div 
           className="w-full h-[146px] rounded-lg flex items-center justify-center text-[90px]"
           style={{ 

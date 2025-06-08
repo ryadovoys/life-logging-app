@@ -9,12 +9,23 @@ type Page = 'home' | 'skills' | 'skillDetail'
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
   const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
+  const [previousPage, setPreviousPage] = useState<Page>('home')
 
-  const navigateToSkills = () => setCurrentPage('skills')
+  const navigateToSkills = () => {
+    setPreviousPage('home')
+    setCurrentPage('skills')
+  }
+  
   const navigateToHome = () => setCurrentPage('home')
+  
   const navigateToSkillDetail = (skillId: string) => {
+    setPreviousPage(currentPage)
     setSelectedSkillId(skillId)
     setCurrentPage('skillDetail')
+  }
+  
+  const navigateBackFromSkillDetail = () => {
+    setCurrentPage(previousPage)
   }
 
   if (currentPage === 'skillDetail') {
@@ -22,6 +33,7 @@ function App() {
       <SkillDetailPage 
         onNavigateToHome={navigateToHome}
         onNavigateToSkills={navigateToSkills}
+        onBack={navigateBackFromSkillDetail}
       />
     )
   }
@@ -35,7 +47,12 @@ function App() {
     )
   }
 
-  return <Homepage onNavigateToSkills={navigateToSkills} />
+  return (
+    <Homepage 
+      onNavigateToSkills={navigateToSkills}
+      onNavigateToSkillDetail={navigateToSkillDetail}
+    />
+  )
 }
 
 export default App

@@ -97,11 +97,17 @@ const mockSuggestions = [
 
 interface HomepageProps {
   onNavigateToSkills?: () => void;
+  onNavigateToSkillDetail?: (skillId: string) => void;
 }
 
-export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills }) => {
+export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNavigateToSkillDetail }) => {
   const [searchValue, setSearchValue] = useState('');
-  const [activeTab, setActiveTab] = useState('home');
+
+  const handleSkillClick = (skillTitle: string) => {
+    if (onNavigateToSkillDetail && skillTitle === 'Surfing') {
+      onNavigateToSkillDetail('surfing');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white font-instrument">
@@ -122,7 +128,11 @@ export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills }) => {
           <div className="overflow-hidden">
             <div className="flex gap-4 overflow-x-auto px-4 pb-4">
               {mockSkills.map((skill, index) => (
-                <SkillCard key={index} {...skill} />
+                <SkillCard 
+                  key={index} 
+                  {...skill} 
+                  onClick={() => handleSkillClick(skill.title)}
+                />
               ))}
             </div>
           </div>
@@ -175,8 +185,8 @@ export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills }) => {
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0">
         <BottomNavigation 
-          activeTab={activeTab} 
-          onTabChange={setActiveTab}
+          currentPage="home"
+          onNavigateToHome={() => {}} 
           onNavigateToSkills={onNavigateToSkills}
         />
       </div>

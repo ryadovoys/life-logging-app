@@ -134,7 +134,6 @@ interface SkillsPageProps {
 }
 
 export const SkillsPage: React.FC<SkillsPageProps> = ({ onNavigateHome, onNavigateToSkillDetail }) => {
-  const [activeTab, setActiveTab] = useState('skills');
 
   const handleSkillClick = (skill: Skill) => {
     if (onNavigateToSkillDetail) {
@@ -188,9 +187,9 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ onNavigateHome, onNaviga
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0">
         <BottomNavigation 
-          activeTab={activeTab} 
-          onTabChange={setActiveTab}
+          currentPage="skills"
           onNavigateToHome={onNavigateHome}
+          onNavigateToSkills={() => {}}
         />
       </div>
     </div>

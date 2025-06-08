@@ -4,11 +4,13 @@ import { PageHeader, SectionHeader, ActivityItem, BottomNavigation } from './ui'
 interface SkillDetailPageProps {
   onNavigateToHome: () => void
   onNavigateToSkills: () => void
+  onBack?: () => void
 }
 
 const SkillDetailPage: React.FC<SkillDetailPageProps> = ({
   onNavigateToHome,
-  onNavigateToSkills
+  onNavigateToSkills,
+  onBack
 }) => {
   const progressStats = [
     { label: 'Est. total', value: '140h', bgColor: 'bg-green-100' },
@@ -21,23 +23,23 @@ const SkillDetailPage: React.FC<SkillDetailPageProps> = ({
     {
       title: '1:36 minutes of surfing',
       timeAgo: '5h ago',
-      source: 'Health App',
+      source: 'Health App' as const,
       emoji: '🏄‍♂️',
-      sourceColor: 'text-red-500'
+      color: '#d9f0ff'
     },
     {
       title: '1:12 minutes of surfing',
       timeAgo: '2 days ago',
-      source: 'Health App',
+      source: 'Health App' as const,
       emoji: '🏄‍♂️',
-      sourceColor: 'text-red-500'
+      color: '#d9f0ff'
     },
     {
       title: '2:15 minutes of surfing',
       timeAgo: '1 week ago',
-      source: 'Transcript',
+      source: 'Transcript' as const,
       emoji: '🏄‍♂️',
-      sourceColor: 'text-gray-600'
+      color: '#d9f0ff'
     }
   ]
 
@@ -96,7 +98,7 @@ const SkillDetailPage: React.FC<SkillDetailPageProps> = ({
     <div className="max-w-[393px] mx-auto bg-white min-h-screen">
       <PageHeader 
         title="Surfing" 
-        onBack={onNavigateToSkills}
+        onBack={onBack || onNavigateToSkills}
         showMenu={true}
         showAddButton={false}
         emoji="🏄‍♂️"
@@ -138,7 +140,9 @@ const SkillDetailPage: React.FC<SkillDetailPageProps> = ({
                 timeAgo={update.timeAgo}
                 source={update.source}
                 emoji={update.emoji}
-                sourceColor={update.sourceColor}
+                color={update.color}
+                showIcon={true}
+                showBorder={false}
               />
             ))}
           </div>
@@ -209,7 +213,7 @@ const SkillDetailPage: React.FC<SkillDetailPageProps> = ({
 
       <div className="fixed bottom-0 left-0 right-0 z-10">
         <BottomNavigation 
-          currentPage="skills"
+          currentPage="skillDetail"
           onNavigateToHome={onNavigateToHome}
           onNavigateToSkills={onNavigateToSkills}
         />

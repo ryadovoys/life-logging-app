@@ -27,6 +27,8 @@ npm run preview
 - **Frontend:** React 19 + TypeScript + Vite 6.3.5
 - **Styling:** Tailwind CSS 3.4.1 (fully configured with design tokens)
 - **Typography:** Instrument Sans from Google Fonts
+- **Icons:** Material Symbols Outlined (self-hosted variable font with FILL axis for state changes)
+- **App Icons:** PNG icons for Health App, Books App, YouTube, Reddit with automatic mapping
 - **Code Quality:** ESLint with TypeScript, React Hooks, React Refresh plugins
 
 ## Architecture & Key Concepts
@@ -60,17 +62,20 @@ Always refer to the latest Figma designs for UI patterns and implementation guid
 **✅ Completed:**
 - **Homepage** - Complete implementation with all sections (My skills, Recent activities, Learn next, Share updates, Suggested for you)
 - **Skills Page** - Full skills list with stats bar, search-free design, and proper navigation
-- **Skill Detail Page** - Individual skill tracking with progress stats, highlights, recent updates, learn next, inspiration, and suggestions
-- **Navigation System** - Complete 3-page navigation flow: Homepage ↔ Skills Page ↔ Skill Detail Page
-- **Design System** - Complete UI component library with Apple emoji support
+- **Skill Detail Page** - Comprehensive skill detail view with Progress, Highlight, Recent Updates, Learn Next, Inspiration, and Suggested sections
+- **Navigation System** - 3-page navigation (Homepage ↔ Skills ↔ Skill Detail) with smart back button functionality
+- **Design System** - Complete UI component library with Apple emoji support and Material Symbols integration
 - **Mobile Optimization** - iPhone 16 Pro (393px) viewport with proper carousel scrolling
 - **Typography System** - Instrument Sans with proper H2 (21px) and body text sizing
+- **Icon System** - Self-hosted Material Symbols with FILL axis for state changes
+- **App Icons** - Support for PNG app icons (Health App, Books App, YouTube, Reddit)
 
 **Components Architecture:**
 - All pages support navigation props (`onNavigateToHome`, `onNavigateToSkills`, `onNavigateToSkillDetail`)
-- Bottom navigation handles page switching with active states
+- Bottom navigation handles page switching with active states and Material Icons
 - SectionHeader includes styled "View all" buttons (gray background, border, rounded)
-- SkillDetailPage component with comprehensive skill tracking features
+- ActivityItem component supports flexible usage (with/without icons and borders)
+- Smart navigation remembers previous page for proper back button functionality
 - All text is left-aligned with dense spacing (mb-0 between text elements)
 
 ## Available Components
@@ -80,11 +85,12 @@ The following UI components are ready to use in `/src/components/ui/`:
 - **Button** - Primary/secondary variants with 8px border radius
 - **SearchBar** - Search input with add button (used on homepage only)
 - **SkillCard** - Progress cards with Apple emojis, streaks, time tracking, and overlay badges
-- **ActivityItem** - Timeline entries with emojis, source attribution, and clean layout
+- **ActivityItem** - Timeline entries with emojis, source attribution, app icons, and flexible styling (showIcon/showBorder props)
 - **SectionHeader** - Section titles with styled "View all" buttons for navigation
 - **QuestionCard** - AI engagement prompts with action buttons and proper styling
 - **SuggestionCard** - Horizontal skill recommendation cards with Apple emojis
-- **BottomNavigation** - Tab navigation with proper active states and navigation callbacks
+- **BottomNavigation** - Tab navigation with Material Symbols, FILL axis state changes, and navigation callbacks
+- **PageHeader** - Page headers with back buttons, titles, add buttons, and emoji box support
 
 ## Navigation Implementation
 
@@ -92,13 +98,15 @@ The following UI components are ready to use in `/src/components/ui/`:
 ```typescript
 type Page = 'home' | 'skills' | 'skillDetail'
 const [currentPage, setCurrentPage] = useState<Page>('home')
+const [previousPage, setPreviousPage] = useState<Page>('home')
 const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
 ```
 
 **Navigation Methods:**
 - "View all" button in "My skills" section → Skills page
-- Click any skill in Skills page → Skill Detail page  
-- Back button in Skills/Detail pages → Previous page
+- Click any skill in Skills page → Skill Detail page
+- Click surfing skill card on Homepage → Skill Detail page (direct navigation)
+- Back button in Skills/Detail pages → Previous page (smart navigation)
 - Bottom navigation tabs → Switch between main pages
 - All navigation uses callback props passed down through components
 
@@ -118,6 +126,19 @@ const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
 **Apple Emoji Rendering:**
 ```css
 font-family: '-apple-system, "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif'
+```
+
+**Material Symbols Setup:**
+```css
+/* Self-hosted Material Symbols with variable font support */
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  src: url('/MaterialSymbolsOutlined.ttf') format('truetype');
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* FILL axis for state changes (0 = outline, 1 = filled) */
+font-variation-settings: 'FILL' ${isActive ? 1 : 0}
 ```
 
 **Color Palette:**
@@ -157,6 +178,40 @@ Skill Detail Page Features:
 Future planned flow:
 - **Skill Detail Page** → **Technique/Goal Detail** → **Deep Learning Content**
 
+## Component Reuse Guidelines
+
+**IMPORTANT:** When creating new pages or features, always follow these patterns:
+
+1. **Reuse Existing Components First**
+   - Check `/src/components/ui/` for available components before creating new ones
+   - Use ActivityItem for any timeline/list entries (supports showIcon/showBorder props)
+   - Use SectionHeader for all section titles with optional "View all" buttons
+   - Use PageHeader for consistent page headers with back buttons
+   - Use BottomNavigation for tab switching between main pages
+
+2. **Follow Established Patterns**
+   - All pages should accept navigation props (`onNavigateToHome`, `onNavigateToSkills`, etc.)
+   - Use smart navigation with previousPage tracking for back buttons
+   - Follow 393px viewport with `max-w-[393px] mx-auto` containers
+   - Apply consistent spacing: `pb-20` for content, `mb-0` between text elements
+   - Use Apple emoji rendering with SF Pro font family
+
+3. **When to Create New Components**
+   - Only create new components when Figma shows a completely new UI pattern
+   - If existing components can't be adapted with props, create new ones
+   - Always follow the established design system (8px border radius, Material Symbols, etc.)
+   - Document new components in this file and add to `/src/components/ui/index.ts`
+
+4. **Material Symbols Usage**
+   - Use self-hosted Material Symbols with FILL axis for state changes
+   - Icons: home, star, explore, settings for bottom navigation
+   - Apply `font-variation-settings: 'FILL' ${isActive ? 1 : 0}` for state changes
+
+5. **App Icon Integration**
+   - Store PNG icons in `/public/` folder (e.g., `/health-app.png`)
+   - Use APP_ICONS mapping in ActivityItem component
+   - Support automatic icon detection by app name
+
 ## Claude Code Memories
 
 - Don't run dev yourself, just tell me when it's ready to run and I'll do it
@@ -165,6 +220,8 @@ Future planned flow:
 - No hover states on mobile components
 - Dense text spacing with mb-0 between elements
 - All text should be left-aligned
+- Use self-hosted Material Symbols with FILL axis for icon state changes
+- Reuse existing components before creating new ones
 
 ## Collaboration Memory
 
