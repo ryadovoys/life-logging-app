@@ -1,5 +1,5 @@
-import React from 'react';
-import { BottomNavigation, PageHeader } from './ui';
+import React, { useState } from 'react';
+import { BottomNavigation, PageHeader, PageHeaderActions, PageTitle } from './ui';
 
 interface Skill {
   id: string;
@@ -8,7 +8,10 @@ interface Skill {
   lastActivity: string;
   emoji: string;
   color: string;
+  category: 'Physical' | 'Creative' | 'Professional' | 'Lifestyle';
 }
+
+type SortOption = 'Categorized' | 'By name' | 'Recent';
 
 const mockSkills: Skill[] = [
   {
@@ -18,6 +21,7 @@ const mockSkills: Skill[] = [
     lastActivity: 'Today',
     emoji: '🏄‍♂️',
     color: '#d9f0ff',
+    category: 'Physical',
   },
   {
     id: '2',
@@ -26,6 +30,7 @@ const mockSkills: Skill[] = [
     lastActivity: 'Yesterday',
     emoji: '🎸',
     color: '#ffdfd9',
+    category: 'Creative',
   },
   {
     id: '3',
@@ -34,54 +39,79 @@ const mockSkills: Skill[] = [
     lastActivity: 'Last Week',
     emoji: '🎨',
     color: '#E1F5FE',
+    category: 'Creative',
   },
   {
     id: '4',
-    name: 'Reading',
-    totalTime: '35h',
-    lastActivity: 'Recently',
-    emoji: '📙',
-    color: '#f5e8e2',
-  },
-  {
-    id: '5',
-    name: 'Weightlifting',
-    totalTime: '80h',
-    lastActivity: 'A Few Days Ago',
-    emoji: '🏋️‍♂️',
-    color: '#F3E5F5',
-  },
-  {
-    id: '6',
-    name: 'Singing',
-    totalTime: '50h',
-    lastActivity: 'This Month',
-    emoji: '🎤',
-    color: '#FCE4EC',
-  },
-  {
-    id: '7',
     name: 'Yoga',
     totalTime: '45h',
     lastActivity: 'Yesterday',
     emoji: '🧘‍♀️',
     color: '#E8F5E8',
+    category: 'Physical',
   },
   {
-    id: '8',
+    id: '5',
     name: 'Cooking',
     totalTime: '30h',
     lastActivity: 'Today',
     emoji: '🍳',
     color: '#FFF8E1',
+    category: 'Lifestyle',
   },
   {
-    id: '9',
+    id: '6',
+    name: 'Weightlifting',
+    totalTime: '80h',
+    lastActivity: 'A Few Days Ago',
+    emoji: '🏋️‍♂️',
+    color: '#F3E5F5',
+    category: 'Physical',
+  },
+  {
+    id: '7',
     name: 'Cycling',
     totalTime: '25h',
     lastActivity: 'Last Weekend',
     emoji: '🚴‍♂️',
     color: '#E3F2FD',
+    category: 'Physical',
+  },
+  {
+    id: '8',
+    name: 'Graphic Design',
+    totalTime: '140h',
+    lastActivity: 'Today',
+    emoji: '🎨',
+    color: '#d9f0ff',
+    category: 'Professional',
+  },
+  {
+    id: '9',
+    name: 'Branding & Identity',
+    totalTime: '20h',
+    lastActivity: 'Yesterday',
+    emoji: '🎸',
+    color: '#ffdfd9',
+    category: 'Professional',
+  },
+  {
+    id: '10',
+    name: 'Typography',
+    totalTime: '60h',
+    lastActivity: 'Last Week',
+    emoji: '🎨',
+    color: '#E1F5FE',
+    category: 'Professional',
+  },
+  {
+    id: '11',
+    name: 'Adobe Creative Suite',
+    totalTime: '35h',
+    lastActivity: 'Recently',
+    emoji: '📙',
+    color: '#f5e8e2',
+    category: 'Professional',
   },
 ];
 
@@ -92,7 +122,7 @@ interface SkillItemProps {
 
 const SkillItem: React.FC<SkillItemProps> = ({ skill, onClick }) => (
   <div 
-    className="flex items-center gap-md py-sm px-0 border-b border-gray-40 last:border-b-0 cursor-pointer"
+    className="flex items-center gap-md py-sm px-0 cursor-pointer"
     onClick={onClick}
   >
     <div 
@@ -134,6 +164,8 @@ interface SkillsPageProps {
 }
 
 export const SkillsPage: React.FC<SkillsPageProps> = ({ onNavigateHome, onNavigateToSkillDetail }) => {
+  const [sortOption, setSortOption] = useState<SortOption>('Categorized');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleSkillClick = (skill: Skill) => {
     if (onNavigateToSkillDetail) {
@@ -145,42 +177,119 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ onNavigateHome, onNaviga
     console.log('Add new skill');
   };
 
+  const handleSortOptionSelect = (option: SortOption) => {
+    setSortOption(option);
+    setIsDropdownOpen(false);
+  };
+
+  const sortedSkills = () => {
+    switch (sortOption) {
+      case 'By name':
+        return [...mockSkills].sort((a, b) => a.name.localeCompare(b.name));
+      case 'Recent':
+        const recencyOrder: { [key: string]: number } = {
+          'Today': 1,
+          'Yesterday': 2,
+          'A Few Days Ago': 3,
+          'Last Week': 4,
+          'Last Weekend': 5,
+          'This Month': 6,
+          'Recently': 7,
+        };
+        return [...mockSkills].sort((a, b) => 
+          (recencyOrder[a.lastActivity] || 999) - (recencyOrder[b.lastActivity] || 999)
+        );
+      case 'Categorized':
+      default:
+        return mockSkills;
+    }
+  };
+
+  const groupedSkills = () => {
+    if (sortOption !== 'Categorized') {
+      return { 'All Skills': sortedSkills() };
+    }
+    
+    const categories: { [key: string]: Skill[] } = {
+      'Physical': [],
+      'Creative': [],
+      'Professional': [],
+      'Lifestyle': [],
+    };
+    
+    mockSkills.forEach(skill => {
+      categories[skill.category].push(skill);
+    });
+    
+    return categories;
+  };
+
   return (
     <div className="min-h-screen bg-white font-instrument">
       {/* Main Content */}
       <div className="pb-20">
         {/* Header */}
         <PageHeader
-          title="Skills"
           onBack={onNavigateHome}
-          onAdd={handleAddSkill}
+          rightElement={<PageHeaderActions.PlusButton onClick={handleAddSkill} />}
         />
 
-        {/* All Skills Section */}
-        <div className="px-md pt-md">
-          <div className="flex items-center justify-between mb-md">
-            <h2 className="font-instrument font-semibold text-h2 text-black">
-              All skills
-            </h2>
-            
-            <button className="flex items-center gap-xs px-sm py-xs bg-gray-20 border border-gray-40 rounded-ios text-caption text-gray-80">
-              <span>Recent</span>
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Skills List */}
-          <div className="bg-white">
-            {mockSkills.map((skill) => (
-              <SkillItem
-                key={skill.id}
-                skill={skill}
-                onClick={() => handleSkillClick(skill)}
-              />
-            ))}
-          </div>
+        {/* Page Title Section */}
+        <PageTitle 
+          title="All skills" 
+          rightElement={
+            <div className="relative">
+              <button 
+                className="flex items-center gap-xs px-sm py-xs bg-gray-20 border border-gray-40 rounded-lg text-caption text-gray-80"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                <span>{sortOption}</span>
+                <svg 
+                  className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} 
+                  fill="currentColor" 
+                  viewBox="0 0 20 20"
+                >
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+              
+              {isDropdownOpen && (
+                <div className="absolute right-0 top-full mt-xs bg-white border border-gray-40 rounded-lg shadow-lg z-10 min-w-[120px]">
+                  {(['Categorized', 'By name', 'Recent'] as SortOption[]).map((option) => (
+                    <button
+                      key={option}
+                      className={`w-full text-left px-sm py-xs text-caption hover:bg-gray-20 first:rounded-t-lg last:rounded-b-lg ${
+                        sortOption === option ? 'text-black font-semibold' : 'text-gray-80'
+                      }`}
+                      onClick={() => handleSortOptionSelect(option)}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          }
+        />
+        
+        {/* Skills List */}
+        <div className="px-md bg-white">
+          {Object.entries(groupedSkills()).map(([categoryName, skills]) => (
+            <div key={categoryName}>
+              {sortOption === 'Categorized' && (
+                <h2 className="font-instrument font-semibold text-title text-black mb-md mt-lg first:mt-0 text-left">
+                  {categoryName}
+                </h2>
+              )}
+              {skills.map((skill) => (
+                <SkillItem
+                  key={skill.id}
+                  skill={skill}
+                  onClick={() => handleSkillClick(skill)}
+                />
+              ))}
+            </div>
+          ))}
         </div>
       </div>
 
