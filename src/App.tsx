@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Homepage } from './components/Homepage'
 import { SkillsPage } from './components/SkillsPage'
+import { RecentPage } from './components/RecentPage'
 import SkillDetailPage from './components/SkillDetailPage'
 import './App.css'
 
-type Page = 'home' | 'skills' | 'skillDetail'
+type Page = 'home' | 'skills' | 'recent' | 'skillDetail'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
@@ -12,8 +13,13 @@ function App() {
   const [previousPage, setPreviousPage] = useState<Page>('home')
 
   const navigateToSkills = () => {
-    setPreviousPage('home')
+    setPreviousPage(currentPage)
     setCurrentPage('skills')
+  }
+  
+  const navigateToRecent = () => {
+    setPreviousPage(currentPage)
+    setCurrentPage('recent')
   }
   
   const navigateToHome = () => setCurrentPage('home')
@@ -48,9 +54,20 @@ function App() {
     )
   }
 
+  if (currentPage === 'recent') {
+    return (
+      <RecentPage 
+        onNavigateHome={navigateToHome}
+        onNavigateToSkills={navigateToSkills}
+        onNavigateToSkillDetail={navigateToSkillDetail}
+      />
+    )
+  }
+
   return (
     <Homepage 
       onNavigateToSkills={navigateToSkills}
+      onNavigateToRecent={navigateToRecent}
       onNavigateToSkillDetail={navigateToSkillDetail}
     />
   )

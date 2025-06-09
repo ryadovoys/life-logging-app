@@ -8,6 +8,7 @@ import {
   SuggestionCard,
   BottomNavigation,
 } from './ui';
+import type { AppType } from './ui/ActivityItem';
 
 const mockSkills = [
   {
@@ -34,7 +35,15 @@ const mockSkills = [
   },
 ];
 
-const mockActivities = [
+const mockActivities: Array<{
+  skill: string;
+  activity: string;
+  timeAgo: string;
+  source: AppType;
+  emoji: string;
+  color: string;
+  sourceIcon?: string;
+}> = [
   {
     skill: 'Guitar',
     activity: 'Playing over an hour',
@@ -63,12 +72,19 @@ const mockActivities = [
   },
 ];
 
-const mockUpNext = [
+const mockUpNext: Array<{
+  skill: string;
+  activity: string;
+  timeAgo: string;
+  source: AppType;
+  emoji: string;
+  color: string;
+}> = [
   {
     skill: 'Surfing',
     activity: 'Land a smooth cutback',
     timeAgo: 'Medium',
-    source: '',
+    source: 'Transcript', // Fixed: was empty string
     emoji: '🏄‍♂️',
     color: '#d9f0ff',
   },
@@ -97,10 +113,11 @@ const mockSuggestions = [
 
 interface HomepageProps {
   onNavigateToSkills?: () => void;
+  onNavigateToRecent?: () => void;
   onNavigateToSkillDetail?: (skillId: string) => void;
 }
 
-export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNavigateToSkillDetail }) => {
+export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNavigateToRecent, onNavigateToSkillDetail }) => {
   const [searchValue, setSearchValue] = useState('');
 
   const handleSkillClick = (skillTitle: string) => {
@@ -114,7 +131,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNaviga
       {/* Main Content */}
       <div className="pb-20">
         {/* Header with Search */}
-        <div className="px-4 pt-6 pb-3">
+        <div className="px-md pt-lg pb-sm">
           <SearchBar
             value={searchValue}
             onChange={setSearchValue}
@@ -123,10 +140,10 @@ export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNaviga
         </div>
 
         {/* My Skills Section */}
-        <div className="mb-6">
+        <div className="mb-lg">
           <SectionHeader title="My skills" showViewAll onViewAll={onNavigateToSkills} />
           <div className="overflow-hidden">
-            <div className="flex gap-4 overflow-x-auto px-4 pb-4">
+            <div className="flex gap-md overflow-x-auto px-md pb-md">
               {mockSkills.map((skill, index) => (
                 <SkillCard 
                   key={index} 
@@ -138,29 +155,19 @@ export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNaviga
           </div>
         </div>
 
-        {/* Recent Activities Section */}
-        <div className="mb-6">
-          <SectionHeader title="Recent activities" showViewAll />
-          <div className="px-4">
+        {/* Recent Section */}
+        <div className="mb-lg">
+          <SectionHeader title="Recent" showViewAll onViewAll={onNavigateToRecent} />
+          <div className="px-md">
             {mockActivities.map((activity, index) => (
               <ActivityItem key={index} {...activity} />
             ))}
           </div>
         </div>
 
-        {/* Learn Next Section */}
-        <div className="mb-6">
-          <SectionHeader title="Learn next" showViewAll />
-          <div className="px-4">
-            {mockUpNext.map((activity, index) => (
-              <ActivityItem key={index} {...activity} />
-            ))}
-          </div>
-        </div>
-
-        {/* Share Updates Section */}
-        <div className="mb-6">
-          <SectionHeader title="Share updates" showViewAll />
+        {/* Quiz Section */}
+        <div className="mb-lg">
+          <SectionHeader title="Quiz" showViewAll />
           <QuestionCard
             question="Let's update your musical journey — have you played piano recently?"
             onYes={() => console.log('Yes clicked')}
@@ -169,11 +176,11 @@ export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNaviga
           />
         </div>
 
-        {/* Suggested for You Section */}
-        <div className="mb-6">
-          <SectionHeader title="Suggested for you" showViewAll />
+        {/* Learn New Section */}
+        <div className="mb-lg">
+          <SectionHeader title="Learn new" showViewAll />
           <div className="overflow-hidden">
-            <div className="flex gap-3 overflow-x-auto px-4 pb-4">
+            <div className="flex gap-sm overflow-x-auto px-md pb-md">
               {mockSuggestions.map((suggestion, index) => (
                 <SuggestionCard key={index} {...suggestion} />
               ))}
