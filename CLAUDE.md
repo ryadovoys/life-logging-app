@@ -84,12 +84,28 @@ Always refer to the latest Figma designs for UI patterns and implementation guid
 ```
 
 #### Spacing System (Systematic Scale)
-- **XS:** `--space-xs: 4px` - Micro spacing
-- **SM:** `--space-sm: 8px` - Small spacing (current border radius)
-- **MD:** `--space-md: 16px` - Medium spacing
-- **LG:** `--space-lg: 24px` - Large spacing  
-- **XL:** `--space-xl: 32px` - Extra large spacing
-- **XXL:** `--space-xxl: 48px` - Maximum spacing
+- **XS:** `--space-xs: 4px` (0.25rem) - Micro spacing
+- **SM:** `--space-sm: 8px` (0.5rem) - Small spacing (current border radius)
+- **MD:** `--space-md: 16px` (1rem) - Medium spacing
+- **LG:** `--space-lg: 24px` (1.5rem) - Large spacing  
+- **XL:** `--space-xl: 32px` (2rem) - Extra large spacing
+- **XXL:** `--space-xxl: 48px` (3rem) - Maximum spacing
+
+**Usage Guidelines:**
+- **XS (4px):** Icon margins, tight spacing in badges, position offsets, small gaps
+- **SM (8px):** Element gaps, button padding, divider heights, item spacing
+- **MD (16px):** Section padding, card gaps, content spacing, container padding
+- **LG (24px):** Section margins, header padding, major content spacing
+- **XL (32px):** Large content separation, major layout spacing
+- **XXL (48px):** Maximum layout separation, hero section spacing
+
+**Application Examples:**
+- Button padding: `px-sm` (small), `px-md` (normal), `px-lg` (large)
+- Card gaps: `gap-md` for skill cards, `gap-sm` for suggestion cards
+- Section margins: `mb-lg` for major sections, `mb-md` for subsections  
+- Container padding: `px-md` for most content areas
+- Icon spacing: `mr-xs` for button icons, `gap-xs` for tight layouts
+- Position offsets: `top-xs left-xs` for overlay badges
 
 #### Component Standards
 - **Mobile-first:** All designs optimized for iPhone 16 Pro (393px viewport)
@@ -196,14 +212,29 @@ const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
 - All containers: `max-width: 393px; margin: 0 auto`
 - No side padding on mobile to prevent content cutoff
 
-**Typography Scale (Enhanced System):**
-- Display: `text-display` (28px, font-weight: 700) - Hero text and major headlines
-- Headline: `text-headline` (24px, font-weight: 600) - Page titles
-- Title: `text-title` (21px, font-weight: 600) - Section headers (current H2)
-- Subtitle: `text-subtitle` (18px, font-weight: 600) - Subsection headers
-- Body: `text-body` (16px, font-weight: 600) - Main content text
-- Caption: `text-caption` (14px, font-weight: 400) - Supporting text
-- Overline: `text-overline` (12px, font-weight: 500) - Labels and descriptors
+**Typography Scale (Enhanced 7-Level System):**
+- **Display:** `text-display` (32px, weight: 700) - Major headings, hero text
+- **Headline:** `text-headline` (24px, weight: 600) - Section headings  
+- **Title:** `text-title` (21px, weight: 600) - Card titles, page headers
+- **Subtitle:** `text-subtitle` (18px, weight: 500) - Subheadings
+- **Body:** `text-body` (16px, weight: 400) - Main content, descriptions
+- **Caption:** `text-caption` (14px, weight: 400) - Secondary information
+- **Overline:** `text-overline` (12px, weight: 500) - Labels, metadata
+
+**Usage Guidelines:**
+- Use Display sparingly for major page titles or hero sections
+- Headline for main section titles (e.g., "All skills", "My skills")
+- Title for component headers and card titles
+- Subtitle for grouping labels and secondary headings
+- Body for primary content and descriptions
+- Caption for timestamps, metadata, and supporting information
+- Overline for badges, tags, and small labels
+
+**Legacy Compatibility Maintained:**
+- `text-h2` → `text-title` (21px) - Existing usage preserved
+- `text-body-large` → `text-headline` (24px) - For larger text needs
+- `text-body-small` → `text-caption` (14px) - Secondary information
+- `text-descriptor` → `text-overline` (12px) - Labels and metadata
 
 **Apple Emoji Rendering:**
 ```css
@@ -318,18 +349,9 @@ Future planned flow:
 
 ## Claude Code Memories
 
-- Don't run dev yourself, just tell me when it's ready to run and I'll do it
 - Use Apple emojis with SF Pro font family for skill icons
 - Always use 393px viewport for iPhone 16 Pro
 - No hover states on mobile components
-- Dense text spacing with mb-0 between elements
 - All text should be left-aligned
 - Use self-hosted Material Symbols with FILL axis for icon state changes
 - Reuse existing components before creating new ones
-
-## Collaboration Memory
-
-- Working on design in Figma as a creative teammate
-- Goal is to create amazing, user-friendly design
-- Excited to ideate, review, enhance, and create together
-- Focus on ease of use and great interaction

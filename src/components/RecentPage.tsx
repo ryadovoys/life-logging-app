@@ -117,12 +117,14 @@ interface RecentPageProps {
   onNavigateHome?: () => void;
   onNavigateToSkills?: () => void;
   onNavigateToSkillDetail?: (skillId: string) => void;
+  onNavigateToActivityDetail?: (activityId: string) => void;
 }
 
 export const RecentPage: React.FC<RecentPageProps> = ({ 
   onNavigateHome, 
   onNavigateToSkills,
-  onNavigateToSkillDetail 
+  onNavigateToSkillDetail,
+  onNavigateToActivityDetail 
 }) => {
   const [filterOption, setFilterOption] = useState<FilterOption>('All');
   const [groupOption, setGroupOption] = useState<GroupOption>('By Time');
@@ -134,10 +136,9 @@ export const RecentPage: React.FC<RecentPageProps> = ({
   };
 
   const handleActivityClick = (activity: Activity) => {
-    if (onNavigateToSkillDetail) {
-      // Navigate to skill detail based on the activity's skill
-      const skillId = activity.skill.toLowerCase();
-      onNavigateToSkillDetail(skillId);
+    if (onNavigateToActivityDetail) {
+      // Navigate to activity detail
+      onNavigateToActivityDetail(activity.id);
     }
   };
 

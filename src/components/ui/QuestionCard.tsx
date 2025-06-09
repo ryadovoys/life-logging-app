@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from './Button';
+import { LegacyButton as Button } from './Button';
 
 interface QuestionCardProps {
   question: string;
@@ -15,14 +15,14 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   onSkip,
 }) => {
   return (
-    <div className="bg-[#d9f0ff] rounded-lg border border-gray-40 mx-4">
-      <div className="px-4 pt-6 pb-3">
+    <div className="bg-[#d9f0ff] rounded-lg mx-md">
+      <div className="px-md pt-lg pb-sm">
         <p className="font-instrument font-semibold text-body text-black text-center">
           {question}
         </p>
       </div>
       
-      <div className="flex gap-3 px-4 py-3">
+      <div className="flex gap-sm px-md py-sm">
         <Button variant="secondary" className="flex-1" onClick={onNo}>
           No
         </Button>
@@ -31,10 +31,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         </Button>
       </div>
       
-      <div className="px-4 pb-4">
+      <div className="px-md pb-md">
         <button
           onClick={onSkip}
-          className="w-full font-instrument font-normal text-body-small text-gray-80 hover:text-black transition-colors underline"
+          className="w-full font-instrument font-normal text-caption text-gray-80 hover:text-black transition-colors underline"
         >
           Skip to the next one
         </button>

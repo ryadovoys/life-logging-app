@@ -7,7 +7,7 @@ export { LegacySectionHeader as SectionHeader } from './SectionHeader';
 export { QuestionCard } from './QuestionCard';
 export { SuggestionCard } from './SuggestionCard';
 export { BottomNavigation } from './BottomNavigation';
-export { PageHeader } from './PageHeader';
+export { PageHeader, PageHeaderActions } from './PageHeader';
 export { PageTitle } from './PageTitle';
 
 // Enhanced exports (opt-in usage)
@@ -32,3 +32,4 @@ export {
 export type { SectionHeaderProps as EnhancedSectionHeaderProps } from './SectionHeader';
 
 export type { PageTitleProps } from './PageTitle';
+export type { PageHeaderProps } from './PageHeader';

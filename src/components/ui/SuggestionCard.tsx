@@ -15,7 +15,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
 }) => {
   return (
     <div 
-      className="flex-shrink-0 w-[310px] rounded-lg border border-gray-40 flex items-center gap-4 p-0"
+      className="flex-shrink-0 w-[310px] rounded-lg flex items-center gap-4 p-0"
       style={{ backgroundColor: color }}
     >
       <div 

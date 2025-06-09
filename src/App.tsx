@@ -2,14 +2,16 @@ import { useState } from 'react'
 import { Homepage } from './components/Homepage'
 import { SkillsPage } from './components/SkillsPage'
 import { RecentPage } from './components/RecentPage'
+import { RecentActivityDetailPage } from './components/RecentActivityDetailPage'
 import SkillDetailPage from './components/SkillDetailPage'
 import './App.css'
 
-type Page = 'home' | 'skills' | 'recent' | 'skillDetail'
+type Page = 'home' | 'skills' | 'recent' | 'skillDetail' | 'activityDetail'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
   // const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
+  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(null)
   const [previousPage, setPreviousPage] = useState<Page>('home')
 
   const navigateToSkills = () => {
@@ -31,7 +33,17 @@ function App() {
     setCurrentPage('skillDetail')
   }
   
+  const navigateToActivityDetail = (activityId: string) => {
+    setPreviousPage(currentPage)
+    setSelectedActivityId(activityId)
+    setCurrentPage('activityDetail')
+  }
+  
   const navigateBackFromSkillDetail = () => {
+    setCurrentPage(previousPage)
+  }
+  
+  const navigateBackFromActivityDetail = () => {
     setCurrentPage(previousPage)
   }
 
@@ -41,6 +53,18 @@ function App() {
         onNavigateToHome={navigateToHome}
         onNavigateToSkills={navigateToSkills}
         onBack={navigateBackFromSkillDetail}
+        onNavigateToActivityDetail={navigateToActivityDetail}
+      />
+    )
+  }
+
+  if (currentPage === 'activityDetail') {
+    return (
+      <RecentActivityDetailPage 
+        onNavigateHome={navigateToHome}
+        onNavigateToSkills={navigateToSkills}
+        onBack={navigateBackFromActivityDetail}
+        activityId={selectedActivityId || undefined}
       />
     )
   }
@@ -60,6 +84,7 @@ function App() {
         onNavigateHome={navigateToHome}
         onNavigateToSkills={navigateToSkills}
         onNavigateToSkillDetail={navigateToSkillDetail}
+        onNavigateToActivityDetail={navigateToActivityDetail}
       />
     )
   }
