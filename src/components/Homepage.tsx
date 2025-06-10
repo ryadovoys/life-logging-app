@@ -8,121 +8,91 @@ import {
   SuggestionCard,
   BottomNavigation,
 } from './ui';
-import type { AppType } from './ui/ActivityItem';
+import { skills, getRecentActivities, getSuggestedSkills } from '../data';
 
-const mockSkills = [
-  {
-    title: 'Surfing',
-    totalTime: '100h',
-    lastActivity: 'Today',
-    streak: 5,
-    emoji: '🏄‍♂️',
-    color: '#d9f0ff',
-  },
-  {
-    title: 'Guitar',
-    totalTime: '100h',
-    lastActivity: 'Today',
-    emoji: '🎸',
-    color: '#ffdfd9',
-  },
-  {
-    title: 'Skateboarding',
-    totalTime: '100h',
-    lastActivity: 'Today',
-    emoji: '🛹',
-    color: '#f7e8bb',
-  },
-];
+// Get real data from our centralized data structure
+const getMySkills = () => {
+  // Return top 3 most active skills for homepage
+  return [skills.surfing, skills.guitar, skills.cooking];
+};
 
-const mockActivities: Array<{
-  skill: string;
-  activity: string;
-  timeAgo: string;
-  source: AppType;
-  emoji: string;
-  color: string;
-  sourceIcon?: string;
-}> = [
-  {
-    skill: 'Guitar',
-    activity: 'Playing over an hour',
-    timeAgo: '5h ago',
-    source: 'Transcript',
-    emoji: '🎸',
-    color: '#ffdfd9',
-  },
-  {
-    skill: 'Surfing',
-    activity: '1:36 minutes of surfing',
-    timeAgo: '5h ago',
-    source: 'Health App',
-    emoji: '🏄‍♂️',
-    color: '#d9f0ff',
-    sourceIcon: '❤️',
-  },
-  {
-    skill: 'Reading',
-    activity: '43 minutes of reading',
-    timeAgo: '5h ago',
-    source: 'Books App',
-    emoji: '📙',
-    color: '#f5e8e2',
-    sourceIcon: '📚',
-  },
-];
+const getHomepageActivities = () => {
+  // Get recent activities for homepage
+  const recentActivities = getRecentActivities(3);
+  return recentActivities.map(activity => {
+    const skill = skills[activity.skillId];
+    return {
+      id: activity.id, // Include activity ID for navigation
+      skill: skill?.name || activity.skillId,
+      activity: activity.title,
+      timeAgo: activity.timeAgo,
+      source: activity.source,
+      emoji: activity.emoji,
+      color: skill?.color || '#f0f0f0',
+      sourceIcon: activity.source === 'Health App' ? '❤️' : 
+                  activity.source === 'Books App' ? '📚' : undefined,
+    };
+  });
+};
 
-const mockUpNext: Array<{
-  skill: string;
-  activity: string;
-  timeAgo: string;
-  source: AppType;
-  emoji: string;
-  color: string;
-}> = [
-  {
-    skill: 'Surfing',
-    activity: 'Land a smooth cutback',
-    timeAgo: 'Medium',
-    source: 'Transcript', // Fixed: was empty string
-    emoji: '🏄‍♂️',
-    color: '#d9f0ff',
-  },
-];
-
-const mockSuggestions = [
-  {
-    title: 'Punk Rock',
-    description: 'Because you like guitar and skateboarding',
-    emoji: '🤘',
-    color: '#fbeaff',
-  },
-  {
-    title: 'Gardening',
-    description: 'Just something new for you to try, take a look',
-    emoji: '🌿',
-    color: '#e9ffde',
-  },
-  {
-    title: 'Snowboarding',
-    description: 'Based on your interest in skateboarding and surfing',
-    emoji: '🏂',
-    color: '#d9f0ff',
-  },
-];
+const getHomepageSuggestions = () => {
+  // Get suggested skills based on current skills
+  const suggestedForSurfing = getSuggestedSkills('surfing');
+  const suggestedForGuitar = getSuggestedSkills('guitar');
+  
+  const allSuggested = [...suggestedForSurfing, ...suggestedForGuitar];
+  
+  // Add some custom suggestions
+  const customSuggestions = [
+    {
+      title: 'Punk Rock',
+      description: 'Because you like guitar and music',
+      emoji: '🤘',
+      color: '#fbeaff',
+    },
+    {
+      title: 'Gardening',
+      description: 'Just something new for you to try, take a look',
+      emoji: '🌿',
+      color: '#e9ffde',
+    },
+  ];
+  
+  // Convert skills to suggestion format and combine
+  const skillSuggestions = allSuggested.slice(0, 2).map(skill => ({
+    title: skill.name,
+    description: `Based on your interest in other ${skill.category.toLowerCase()} activities`,
+    emoji: skill.emoji,
+    color: skill.color,
+  }));
+  
+  return [...skillSuggestions, ...customSuggestions];
+};
 
 interface HomepageProps {
   onNavigateToSkills?: () => void;
   onNavigateToRecent?: () => void;
   onNavigateToSkillDetail?: (skillId: string) => void;
+  onNavigateToActivityDetail?: (activityId: string) => void;
 }
 
-export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNavigateToRecent, onNavigateToSkillDetail }) => {
+export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNavigateToRecent, onNavigateToSkillDetail, onNavigateToActivityDetail }) => {
   const [searchValue, setSearchValue] = useState('');
 
-  const handleSkillClick = (skillTitle: string) => {
-    if (onNavigateToSkillDetail && skillTitle === 'Surfing') {
-      onNavigateToSkillDetail('surfing');
+  // Get real data
+  const mySkills = getMySkills();
+  const recentActivities = getHomepageActivities();
+  const suggestions = getHomepageSuggestions();
+
+  const handleSkillClick = (skillId: string) => {
+    if (onNavigateToSkillDetail) {
+      onNavigateToSkillDetail(skillId);
+    }
+  };
+
+  const handleActivityClick = (activityId: string) => {
+    if (onNavigateToActivityDetail) {
+      onNavigateToActivityDetail(activityId);
     }
   };
 
@@ -144,11 +114,16 @@ export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNaviga
           <SectionHeader title="My skills" showViewAll onViewAll={onNavigateToSkills} />
           <div className="overflow-hidden">
             <div className="flex gap-md overflow-x-auto px-md pb-md">
-              {mockSkills.map((skill, index) => (
+              {mySkills.map((skill) => (
                 <SkillCard 
-                  key={index} 
-                  {...skill} 
-                  onClick={() => handleSkillClick(skill.title)}
+                  key={skill.id} 
+                  title={skill.name}
+                  totalTime={skill.totalTime}
+                  lastActivity={skill.lastActivity}
+                  streak={skill.streak}
+                  emoji={skill.emoji}
+                  color={skill.color}
+                  onClick={() => handleSkillClick(skill.id)}
                 />
               ))}
             </div>
@@ -159,8 +134,12 @@ export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNaviga
         <div className="mb-lg">
           <SectionHeader title="Recent" showViewAll onViewAll={onNavigateToRecent} />
           <div className="px-md">
-            {mockActivities.map((activity, index) => (
-              <ActivityItem key={index} {...activity} />
+            {recentActivities.map((activity, index) => (
+              <ActivityItem 
+                key={index} 
+                {...activity} 
+                onClick={() => handleActivityClick(activity.id)}
+              />
             ))}
           </div>
         </div>
@@ -181,7 +160,7 @@ export const Homepage: React.FC<HomepageProps> = ({ onNavigateToSkills, onNaviga
           <SectionHeader title="Learn new" showViewAll />
           <div className="overflow-hidden">
             <div className="flex gap-sm overflow-x-auto px-md pb-md">
-              {mockSuggestions.map((suggestion, index) => (
+              {suggestions.map((suggestion, index) => (
                 <SuggestionCard key={index} {...suggestion} />
               ))}
             </div>

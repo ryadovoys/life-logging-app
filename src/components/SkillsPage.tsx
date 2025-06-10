@@ -1,119 +1,13 @@
 import React, { useState } from 'react';
 import { BottomNavigation, PageHeader, PageHeaderActions, PageTitle } from './ui';
+import { getAllSkills, getSkillsByCategory, type Skill } from '../data';
 
-interface Skill {
-  id: string;
-  name: string;
-  totalTime: string;
-  lastActivity: string;
-  emoji: string;
-  color: string;
-  category: 'Physical' | 'Creative' | 'Professional' | 'Lifestyle';
-}
+// Remove local interface since we're importing from data
 
 type SortOption = 'Categorized' | 'By name' | 'Recent';
 
-const mockSkills: Skill[] = [
-  {
-    id: '1',
-    name: 'Surfing',
-    totalTime: '140h',
-    lastActivity: 'Today',
-    emoji: '🏄‍♂️',
-    color: '#d9f0ff',
-    category: 'Physical',
-  },
-  {
-    id: '2',
-    name: 'Guitar',
-    totalTime: '20h',
-    lastActivity: 'Yesterday',
-    emoji: '🎸',
-    color: '#ffdfd9',
-    category: 'Creative',
-  },
-  {
-    id: '3',
-    name: 'Painting',
-    totalTime: '60h',
-    lastActivity: 'Last Week',
-    emoji: '🎨',
-    color: '#E1F5FE',
-    category: 'Creative',
-  },
-  {
-    id: '4',
-    name: 'Yoga',
-    totalTime: '45h',
-    lastActivity: 'Yesterday',
-    emoji: '🧘‍♀️',
-    color: '#E8F5E8',
-    category: 'Physical',
-  },
-  {
-    id: '5',
-    name: 'Cooking',
-    totalTime: '30h',
-    lastActivity: 'Today',
-    emoji: '🍳',
-    color: '#FFF8E1',
-    category: 'Lifestyle',
-  },
-  {
-    id: '6',
-    name: 'Weightlifting',
-    totalTime: '80h',
-    lastActivity: 'A Few Days Ago',
-    emoji: '🏋️‍♂️',
-    color: '#F3E5F5',
-    category: 'Physical',
-  },
-  {
-    id: '7',
-    name: 'Cycling',
-    totalTime: '25h',
-    lastActivity: 'Last Weekend',
-    emoji: '🚴‍♂️',
-    color: '#E3F2FD',
-    category: 'Physical',
-  },
-  {
-    id: '8',
-    name: 'Graphic Design',
-    totalTime: '140h',
-    lastActivity: 'Today',
-    emoji: '🎨',
-    color: '#d9f0ff',
-    category: 'Professional',
-  },
-  {
-    id: '9',
-    name: 'Branding & Identity',
-    totalTime: '20h',
-    lastActivity: 'Yesterday',
-    emoji: '🎸',
-    color: '#ffdfd9',
-    category: 'Professional',
-  },
-  {
-    id: '10',
-    name: 'Typography',
-    totalTime: '60h',
-    lastActivity: 'Last Week',
-    emoji: '🎨',
-    color: '#E1F5FE',
-    category: 'Professional',
-  },
-  {
-    id: '11',
-    name: 'Adobe Creative Suite',
-    totalTime: '35h',
-    lastActivity: 'Recently',
-    emoji: '📙',
-    color: '#f5e8e2',
-    category: 'Professional',
-  },
-];
+// Get real skills data
+const allSkills = getAllSkills();
 
 interface SkillItemProps {
   skill: Skill;
@@ -185,7 +79,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ onNavigateHome, onNaviga
   const sortedSkills = () => {
     switch (sortOption) {
       case 'By name':
-        return [...mockSkills].sort((a, b) => a.name.localeCompare(b.name));
+        return [...allSkills].sort((a, b) => a.name.localeCompare(b.name));
       case 'Recent':
         const recencyOrder: { [key: string]: number } = {
           'Today': 1,
@@ -196,12 +90,12 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ onNavigateHome, onNaviga
           'This Month': 6,
           'Recently': 7,
         };
-        return [...mockSkills].sort((a, b) => 
+        return [...allSkills].sort((a, b) => 
           (recencyOrder[a.lastActivity] || 999) - (recencyOrder[b.lastActivity] || 999)
         );
       case 'Categorized':
       default:
-        return mockSkills;
+        return allSkills;
     }
   };
 
@@ -211,14 +105,17 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ onNavigateHome, onNaviga
     }
     
     const categories: { [key: string]: Skill[] } = {
-      'Physical': [],
-      'Creative': [],
-      'Professional': [],
-      'Lifestyle': [],
+      'Physical': getSkillsByCategory('Physical'),
+      'Creative': getSkillsByCategory('Creative'),
+      'Professional': getSkillsByCategory('Professional'),
+      'Lifestyle': getSkillsByCategory('Lifestyle'),
     };
     
-    mockSkills.forEach(skill => {
-      categories[skill.category].push(skill);
+    // Filter out empty categories
+    Object.keys(categories).forEach(key => {
+      if (categories[key].length === 0) {
+        delete categories[key];
+      }
     });
     
     return categories;

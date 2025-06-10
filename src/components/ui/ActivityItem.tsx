@@ -236,19 +236,31 @@ export interface LegacyActivityItemProps {
   skill?: string;
   icon?: React.ReactNode;
   sourceIcon?: React.ReactNode | string;
+  onClick?: () => void; // Add onClick support
 }
 
 export const LegacyActivityItem: React.FC<LegacyActivityItemProps> = (props) => {
+  const handleClick = () => {
+    if (props.onClick) {
+      props.onClick();
+    }
+  };
+
   return (
-    <ActivityItem
-      title={props.title || props.activity || ''}
-      emoji={props.emoji || '📝'}
-      timestamp={props.timeAgo}
-      sourceApp={props.source}
-      showIcon={props.showIcon}
-      showBorder={props.showBorder}
-      skillContext={props.skill}
-      visual={{ iconColor: props.color }}
-    />
+    <div 
+      className={props.onClick ? "cursor-pointer" : ""}
+      onClick={handleClick}
+    >
+      <ActivityItem
+        title={props.title || props.activity || ''}
+        emoji={props.emoji || '📝'}
+        timestamp={props.timeAgo}
+        sourceApp={props.source}
+        showIcon={props.showIcon}
+        showBorder={props.showBorder}
+        skillContext={props.skill}
+        visual={{ iconColor: props.color }}
+      />
+    </div>
   );
 };

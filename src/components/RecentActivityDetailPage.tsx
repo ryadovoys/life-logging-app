@@ -1,5 +1,6 @@
 import React from 'react';
-import { PageHeader, PageHeaderActions, PageTitle, SectionHeader, BottomNavigation, EnhancedButton } from './ui';
+import { PageHeader, PageHeaderActions, PageTitle, SectionHeader, BottomNavigation } from './ui';
+import { getActivityById, getSkillById } from '../data';
 
 interface RecentActivityDetailPageProps {
   onNavigateHome?: () => void;
@@ -8,29 +9,49 @@ interface RecentActivityDetailPageProps {
   activityId?: string;
 }
 
-// Mock activity data - would come from props/API in real app
-const mockActivity = {
-  id: '1',
-  title: 'Playing over an hour',
-  skill: 'Guitar',
-  timestamp: '5h ago',
-  description: 'This skill is suggested to improve your wave riding fluidity and control, allowing you to transition smoothly between directions while maintaining speed and momentum.',
-  transcript: 'Focus on using your body weight and looking where you want to go. Keep your knees bent and your core engaged for stability and control.',
-  sourceApp: 'Transcript'
+// Function to get activity data and skill info
+const getActivityData = (activityId?: string) => {
+  if (!activityId) {
+    // Fallback to first activity if no ID provided
+    const activity = getActivityById('guitar-practice-1');
+    const skill = activity ? getSkillById(activity.skillId) : null;
+    return {
+      activity: activity || {
+        id: 'guitar-practice-1',
+        title: 'Playing over an hour',
+        description: 'Focused on chord progressions and strumming patterns. Worked through some Beatles songs and practiced transitions between G, C, and D chords.',
+        transcript: 'Spent most of the time on "Wonderwall" chord progression. My finger positioning is getting better but still struggling with quick changes to F chord. Need to practice barre chords more.',
+        timeAgo: '5h ago',
+        source: 'Transcript' as const,
+        skillId: 'guitar',
+        emoji: '🎸',
+        timestamp: new Date()
+      },
+      skill: skill || { name: 'Guitar', id: 'guitar' }
+    };
+  }
+
+  const activity = getActivityById(activityId);
+  const skill = activity ? getSkillById(activity.skillId) : null;
+
+  if (!activity) {
+    // Fallback if activity not found
+    return getActivityData();
+  }
+
+  return { activity, skill };
 };
 
 export const RecentActivityDetailPage: React.FC<RecentActivityDetailPageProps> = ({
   onNavigateHome,
   onNavigateToSkills,
-  onBack
+  onBack,
+  activityId
 }) => {
-  const handleEdit = () => {
-    console.log('Edit activity');
-  };
+  // Get real activity data
+  const { activity, skill } = getActivityData(activityId);
 
-  const handleAskCoach = () => {
-    console.log('Ask coach about activity');
-  };
+  // Removed edit and ask coach handlers since buttons were removed
 
   const handleViewFullTranscript = () => {
     console.log('View full transcript');
@@ -48,7 +69,7 @@ export const RecentActivityDetailPage: React.FC<RecentActivityDetailPageProps> =
 
         {/* Activity Title */}
         <PageTitle 
-          title={mockActivity.title}
+          title={activity.title}
           spacing="compact"
         />
           
@@ -57,38 +78,40 @@ export const RecentActivityDetailPage: React.FC<RecentActivityDetailPageProps> =
           <div className="flex gap-sm mb-lg">
             <div className="px-md py-sm bg-gray-20 rounded-lg">
               <span className="font-instrument font-normal text-caption text-black">
-                {mockActivity.skill}
+                {skill?.name || 'Unknown Skill'}
               </span>
             </div>
             <div className="px-md py-sm bg-gray-20 rounded-lg">
               <span className="font-instrument font-normal text-caption text-gray-80">
-                {mockActivity.timestamp}
+                {activity.timeAgo}
               </span>
             </div>
           </div>
 
           {/* Description */}
           <p className="text-body text-black mb-lg text-left leading-relaxed !font-normal">
-            {mockActivity.description}
+            {activity.description}
           </p>
 
         </div>
 
         {/* Transcript Section */}
-        <div className="mb-lg">
-          <SectionHeader 
-            title="Transcript" 
-            showViewAll={true} 
-            buttonText="View full transcript"
-            onViewAll={handleViewFullTranscript}
-          />
-          
-          <div className="mx-md mt-md p-md bg-gray-20 rounded-lg">
-            <p className="text-body text-black text-left leading-relaxed !font-normal">
-              {mockActivity.transcript}
-            </p>
+        {activity.transcript && (
+          <div className="mb-lg">
+            <SectionHeader 
+              title="Transcript" 
+              showViewAll={true} 
+              buttonText="View full transcript"
+              onViewAll={handleViewFullTranscript}
+            />
+            
+            <div className="mx-md mt-md p-md bg-gray-20 rounded-lg">
+              <p className="text-body text-black text-left leading-relaxed !font-normal">
+                {activity.transcript}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Bottom Navigation */}

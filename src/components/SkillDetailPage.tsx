@@ -1,109 +1,72 @@
 import React from 'react'
-import { PageHeader, PageHeaderActions, PageTitle, SectionHeader, ActivityItem, SuggestionCard, BottomNavigation } from './ui'
+import { PageHeader, PageHeaderActions, SectionHeader, SuggestionCard, BottomNavigation } from './ui'
+import { getSkillById, getActivitiesBySkillId, getSuggestedSkills } from '../data'
 
 interface SkillDetailPageProps {
   onNavigateToHome: () => void
   onNavigateToSkills: () => void
   onBack?: () => void
   onNavigateToActivityDetail?: (activityId: string) => void
+  skillId?: string // Add skillId prop to determine which skill to show
 }
 
 const SkillDetailPage: React.FC<SkillDetailPageProps> = ({
   onNavigateToHome,
   onNavigateToSkills,
   onBack,
-  onNavigateToActivityDetail
+  onNavigateToActivityDetail,
+  skillId = 'surfing' // Default to surfing for backward compatibility
 }) => {
+  // Get real skill data
+  const skill = getSkillById(skillId);
+  const skillActivities = getActivitiesBySkillId(skillId);
+  const suggestedSkills = getSuggestedSkills(skillId);
+
+  // Fallback to surfing if skill not found
+  if (!skill) {
+    console.warn(`Skill with id ${skillId} not found, falling back to surfing`);
+    const fallbackSkill = getSkillById('surfing');
+    if (!fallbackSkill) {
+      return <div>Error: No skill data available</div>;
+    }
+  }
+
+  const currentSkill = skill || getSkillById('surfing')!;
+  
   const progressStats = [
-    { label: 'Est. total', value: '140h', bgColor: 'bg-green-100' },
-    { label: 'Last entry', value: 'Today', bgColor: 'bg-yellow-100' },
-    { label: 'Hours this week', value: '5h 30m', bgColor: 'bg-blue-100' },
-    { label: 'Monthly trend', value: '+15%', bgColor: 'bg-purple-100' }
+    { label: 'Est. total', value: currentSkill.totalTime, bgColor: 'bg-green-100' },
+    { label: 'Last entry', value: currentSkill.lastActivity, bgColor: 'bg-yellow-100' },
+    { label: 'Hours this week', value: currentSkill.hoursThisWeek, bgColor: 'bg-blue-100' },
+    { label: 'Monthly trend', value: currentSkill.monthlyTrend, bgColor: 'bg-purple-100' }
   ]
 
-  const recentUpdates = [
-    {
-      id: '1',
-      title: '1:36 minutes of surfing',
-      timestamp: '5h ago',
-      sourceApp: 'Health App' as const,
-      emoji: '🏄‍♂️',
-      visual: { iconColor: '#d9f0ff' },
-      interaction: { onMore: () => console.log('More actions for activity 1') }
-    },
-    {
-      id: '2',
-      title: '1:12 minutes of surfing',
-      timestamp: '2 days ago',
-      sourceApp: 'Health App' as const,
-      emoji: '🏄‍♂️',
-      visual: { iconColor: '#d9f0ff' },
-      interaction: { onMore: () => console.log('More actions for activity 2') }
-    },
-    {
-      id: '3',
-      title: '2:15 minutes of surfing',
-      timestamp: '1 week ago',
-      sourceApp: 'Transcript' as const,
-      emoji: '🏄‍♂️',
-      visual: { iconColor: '#d9f0ff' },
-      interaction: { onMore: () => console.log('More actions for activity 3') }
-    }
-  ]
+  // Convert skill activities to the format needed for display
+  const recentUpdates = skillActivities.slice(0, 3).map(activity => ({
+    id: activity.id,
+    title: activity.title,
+    timestamp: activity.timeAgo,
+    sourceApp: activity.source,
+    emoji: activity.emoji,
+    visual: { iconColor: currentSkill.color },
+    interaction: { onMore: () => console.log(`More actions for activity ${activity.id}`) }
+  }))
 
-  const learnNext = [
-    {
-      title: 'Transition to a shorter board',
-      description: 'Unlocked after logging 10h total'
-    },
-    {
-      title: 'Land a smooth cutback',
-      description: 'Based on your recent practice in Turning'
-    },
-    {
-      title: 'Shift weight during bottom turn',
-      description: 'Complements your progress on Pop-Up'
-    }
-  ]
+  // Use real learn next data from skill
+  const learnNext = currentSkill.learnNext
 
-  const inspiration = [
-    {
-      title: 'Cutback Tutorial by Kai',
-      type: 'Video',
-      source: 'YouTube',
-      thumbnailUrl: '/surfing-tutorial-1.jpg', // Will be fetched from YouTube
-      color: '#E3F2FD'
-    },
-    {
-      title: 'Mastering the Cutback',
-      type: 'Article', 
-      source: 'Medium',
-      thumbnailUrl: '/surfing-article-1.jpg', // Will be fetched from Medium
-      color: '#E8F5E8'
-    },
-    {
-      title: 'Cutback Tips from Pros',
-      type: 'Community',
-      source: 'Reddit', 
-      thumbnailUrl: '/surfing-reddit-1.jpg', // Will be fetched from Reddit
-      color: '#FFF8E1'
-    }
-  ]
+  // Use real inspiration data from skill
+  const inspiration = currentSkill.inspiration.map(item => ({
+    ...item,
+    color: '#E3F2FD' // Default color for inspiration items
+  }))
 
-  const suggested = [
-    {
-      title: 'Snowboarding',
-      description: 'Based on your interest in skateboarding and surfing',
-      emoji: '🏂',
-      color: '#d9f0ff'
-    },
-    {
-      title: 'Rock Climbing',
-      description: 'Physical challenge that complements your surfing',
-      emoji: '🧗‍♂️',
-      color: '#f7e8bb'
-    }
-  ]
+  // Use real suggested skills data
+  const suggested = suggestedSkills.map(suggestedSkill => ({
+    title: suggestedSkill.name,
+    description: `Based on your interest in other ${suggestedSkill.category.toLowerCase()} activities`,
+    emoji: suggestedSkill.emoji,
+    color: suggestedSkill.color
+  }))
 
   return (
     <div className="max-w-[393px] mx-auto bg-white min-h-screen">
@@ -117,14 +80,14 @@ const SkillDetailPage: React.FC<SkillDetailPageProps> = ({
           <div 
             className="flex-shrink-0 w-[60px] h-[60px] rounded-lg flex items-center justify-center text-[40px]"
             style={{ 
-              backgroundColor: '#d9f0ff',
+              backgroundColor: currentSkill.color,
               fontFamily: '-apple-system, "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif'
             }}
           >
-            🏄‍♂️
+            {currentSkill.emoji}
           </div>
           <h1 className="font-instrument font-semibold text-headline text-black mb-0 text-left">
-            Surfing
+            {currentSkill.name}
           </h1>
         </div>
       </div>
@@ -276,13 +239,6 @@ const SkillDetailPage: React.FC<SkillDetailPageProps> = ({
                           <img 
                             src="/youtube-app.png" 
                             alt="YouTube"
-                            className="w-4 h-4 rounded-sm"
-                          />
-                        )}
-                        {item.source === 'Medium' && (
-                          <img 
-                            src="/medium-app.png" 
-                            alt="Medium"
                             className="w-4 h-4 rounded-sm"
                           />
                         )}

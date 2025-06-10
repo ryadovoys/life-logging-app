@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { BottomNavigation, PageHeader, PageHeaderActions, PageTitle, ActivityItem, SectionHeader } from './ui';
+import { BottomNavigation, PageHeader, PageHeaderActions, PageTitle, ActivityItem } from './ui';
+import { getRecentActivities, getSkillById } from '../data';
 import type { AppType } from './ui/ActivityItem';
 
-interface Activity {
+// Use the Activity interface from our data structure
+interface DisplayActivity {
   id: string;
   skill: string;
   activity: string;
@@ -18,100 +20,27 @@ interface Activity {
 type FilterOption = 'All' | 'Today' | 'This Week' | 'This Month';
 type GroupOption = 'By Time' | 'By Skill' | 'By Source';
 
-const mockActivities: Activity[] = [
-  {
-    id: '1',
-    skill: 'Guitar',
-    activity: 'Playing over an hour',
-    timeAgo: '5h ago',
-    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
-    source: 'Transcript',
-    emoji: '🎸',
-    color: '#ffdfd9',
-    duration: '1h 15m',
-  },
-  {
-    id: '2',
-    skill: 'Surfing',
-    activity: '1:36 minutes of surfing',
-    timeAgo: '5h ago',
-    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
-    source: 'Health App',
-    emoji: '🏄‍♂️',
-    color: '#d9f0ff',
-    sourceIcon: '❤️',
-    duration: '1h 36m',
-  },
-  {
-    id: '3',
-    skill: 'Reading',
-    activity: '43 minutes of reading',
-    timeAgo: '5h ago',
-    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
-    source: 'Books App',
-    emoji: '📙',
-    color: '#f5e8e2',
-    sourceIcon: '📚',
-    duration: '43m',
-  },
-  {
-    id: '4',
-    skill: 'Yoga',
-    activity: 'Morning yoga session',
-    timeAgo: '1d ago',
-    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    source: 'Health App',
-    emoji: '🧘‍♀️',
-    color: '#E8F5E8',
-    sourceIcon: '❤️',
-    duration: '30m',
-  },
-  {
-    id: '5',
-    skill: 'Cooking',
-    activity: 'Made pasta from scratch',
-    timeAgo: '1d ago',
-    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    source: 'Transcript',
-    emoji: '🍳',
-    color: '#FFF8E1',
-    duration: '45m',
-  },
-  {
-    id: '6',
-    skill: 'Guitar',
-    activity: 'Practice session - chord progressions',
-    timeAgo: '2d ago',
-    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    source: 'Transcript',
-    emoji: '🎸',
-    color: '#ffdfd9',
-    duration: '25m',
-  },
-  {
-    id: '7',
-    skill: 'Cycling',
-    activity: 'Evening ride around the park',
-    timeAgo: '3d ago',
-    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-    source: 'Health App',
-    emoji: '🚴‍♂️',
-    color: '#E3F2FD',
-    sourceIcon: '❤️',
-    duration: '1h 20m',
-  },
-  {
-    id: '8',
-    skill: 'Painting',
-    activity: 'Watercolor landscape study',
-    timeAgo: '4d ago',
-    timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-    source: 'Transcript',
-    emoji: '🎨',
-    color: '#E1F5FE',
-    duration: '2h 10m',
-  },
-];
+// Convert real activities to display format
+const convertToDisplayActivities = (): DisplayActivity[] => {
+  const realActivities = getRecentActivities();
+  
+  return realActivities.map(activity => {
+    const skill = getSkillById(activity.skillId);
+    return {
+      id: activity.id,
+      skill: skill?.name || activity.skillId,
+      activity: activity.title,
+      timeAgo: activity.timeAgo,
+      timestamp: activity.timestamp,
+      source: activity.source,
+      emoji: activity.emoji,
+      color: skill?.color || '#f0f0f0',
+      sourceIcon: activity.source === 'Health App' ? '❤️' : 
+                  activity.source === 'Books App' ? '📚' : undefined,
+      duration: activity.duration,
+    };
+  });
+};
 
 interface RecentPageProps {
   onNavigateHome?: () => void;
@@ -123,26 +52,27 @@ interface RecentPageProps {
 export const RecentPage: React.FC<RecentPageProps> = ({ 
   onNavigateHome, 
   onNavigateToSkills,
-  onNavigateToSkillDetail,
-  onNavigateToActivityDetail 
+  onNavigateToActivityDetail
 }) => {
   const [filterOption, setFilterOption] = useState<FilterOption>('All');
   const [groupOption, setGroupOption] = useState<GroupOption>('By Time');
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [isGroupDropdownOpen, setIsGroupDropdownOpen] = useState(false);
 
+  // Get real activities data
+  const allActivities = convertToDisplayActivities();
+
   const handleAddActivity = () => {
     console.log('Add new activity');
   };
 
-  const handleActivityClick = (activity: Activity) => {
+  const handleActivityClick = (activity: DisplayActivity) => {
     if (onNavigateToActivityDetail) {
-      // Navigate to activity detail
       onNavigateToActivityDetail(activity.id);
     }
   };
 
-  const filterActivities = (activities: Activity[]): Activity[] => {
+  const filterActivities = (activities: DisplayActivity[]): DisplayActivity[] => {
     const now = new Date();
     
     switch (filterOption) {
@@ -163,12 +93,12 @@ export const RecentPage: React.FC<RecentPageProps> = ({
     }
   };
 
-  const groupActivities = (activities: Activity[]) => {
+  const groupActivities = (activities: DisplayActivity[]) => {
     const filtered = filterActivities(activities);
     
     switch (groupOption) {
       case 'By Skill':
-        const bySkill: { [key: string]: Activity[] } = {};
+        const bySkill: { [key: string]: DisplayActivity[] } = {};
         filtered.forEach(activity => {
           if (!bySkill[activity.skill]) {
             bySkill[activity.skill] = [];
@@ -178,7 +108,7 @@ export const RecentPage: React.FC<RecentPageProps> = ({
         return bySkill;
         
       case 'By Source':
-        const bySource: { [key: string]: Activity[] } = {};
+        const bySource: { [key: string]: DisplayActivity[] } = {};
         filtered.forEach(activity => {
           if (!bySource[activity.source]) {
             bySource[activity.source] = [];
@@ -189,7 +119,7 @@ export const RecentPage: React.FC<RecentPageProps> = ({
         
       case 'By Time':
       default:
-        const byTime: { [key: string]: Activity[] } = {
+        const byTime: { [key: string]: DisplayActivity[] } = {
           'Today': [],
           'Yesterday': [],
           'This Week': [],
@@ -226,7 +156,7 @@ export const RecentPage: React.FC<RecentPageProps> = ({
     }
   };
 
-  const groupedActivities = groupActivities(mockActivities);
+  const groupedActivities = groupActivities(allActivities);
 
   return (
     <div className="min-h-screen bg-white font-instrument">

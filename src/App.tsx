@@ -10,7 +10,7 @@ type Page = 'home' | 'skills' | 'recent' | 'skillDetail' | 'activityDetail'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
-  // const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
+  const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null)
   const [selectedActivityId, setSelectedActivityId] = useState<string | null>(null)
   const [previousPage, setPreviousPage] = useState<Page>('home')
 
@@ -28,8 +28,7 @@ function App() {
   
   const navigateToSkillDetail = (skillId: string) => {
     setPreviousPage(currentPage)
-    // setSelectedSkillId(skillId) - TODO: Use skillId when skill details are dynamic
-    console.log('Navigating to skill:', skillId) // Temporary to satisfy linter
+    setSelectedSkillId(skillId)
     setCurrentPage('skillDetail')
   }
   
@@ -54,6 +53,7 @@ function App() {
         onNavigateToSkills={navigateToSkills}
         onBack={navigateBackFromSkillDetail}
         onNavigateToActivityDetail={navigateToActivityDetail}
+        skillId={selectedSkillId || 'surfing'}
       />
     )
   }
@@ -94,6 +94,7 @@ function App() {
       onNavigateToSkills={navigateToSkills}
       onNavigateToRecent={navigateToRecent}
       onNavigateToSkillDetail={navigateToSkillDetail}
+      onNavigateToActivityDetail={navigateToActivityDetail}
     />
   )
 }
